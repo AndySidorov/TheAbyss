@@ -1,8 +1,11 @@
 .idea
 UserSettings
 The Abyss.sln
+The Abyss2.sln
 Assembly-CSharp.csproj
 Temp
 obj
 Library
 Logs
+ProjectSettings
+Packages
