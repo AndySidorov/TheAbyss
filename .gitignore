@@ -1,10 +1,13 @@
 .idea
 UserSettings
 The Abyss.sln
+The Abyss2.sln
+Unity Project.sln
 Assembly-CSharp.csproj
 Temp
 obj
+.vscode/settings.json
 Library
 Logs
-Unity Project.sln
-.vscode/settings.json
+ProjectSettings
+Packages
