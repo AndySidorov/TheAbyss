@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5346f6e56a0ddef43aa8b72f1736c5eb, type: 3}
+  m_Name: Monster Sounds
+  m_EditorClassIdentifier: 
+  _idle: {fileID: 8300000, guid: 10ccf25d89563cb47b8c77777d8a9700, type: 3}
+  _roar: {fileID: 8300000, guid: fdf23e648dead9440afedb83129caea4, type: 3}
+  _run: {fileID: 8300000, guid: f44048f9152dd34448063b737787b9ff, type: 3}
+  _flashed: {fileID: 8300000, guid: ca1efd0ea4c26a140b4abc004223d9bc, type: 3}

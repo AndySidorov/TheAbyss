@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bbf133845f70804dba80bb61a54ba90, type: 3}
+  m_Name: PlayerSounds
+  m_EditorClassIdentifier: 
+  _idle: {fileID: 8300000, guid: ca3227aebdbeb47488e0f4f1e1851de9, type: 3}
+  _walk: {fileID: 8300000, guid: 7bfbfab8c4e66bd4e83e30e6f9b73758, type: 3}
+  _sneak: {fileID: 8300000, guid: 5ff345770ead8564fa66beebd395fb1b, type: 3}
+  _run: {fileID: 8300000, guid: b4d2e0f67981e5a4ca97ba8ebbecf5cc, type: 3}
+  _jump: {fileID: 8300000, guid: 70855b17bbbf00f4d9b65d4b98d49268, type: 3}
+  _jumped: {fileID: 8300000, guid: 7e175495257b3cf469a11bd94a12da40, type: 3}
+  _collect: {fileID: 8300000, guid: cb466d373b6275840bfbf5271c25f75c, type: 3}
+  _drink: {fileID: 8300000, guid: 42e6643c1f27c974183d1a7d7f9fcf59, type: 3}
+  _flash: {fileID: 8300000, guid: d7948a57db700e04c8c74dfe6cbbf830, type: 3}

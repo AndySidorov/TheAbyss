@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47f84f9ec4082504fb6152ef4114bfb1, type: 3}
+  m_Name: Default Player Data
+  m_EditorClassIdentifier: 
+  _defaultSpeed: 2
+  _sneakSpeed: 1.2
+  _runSpeed: 4
+  _defaultJumpHeight: 0.5
+  _sneakJumpHeight: 0.4
+  _runJumpHeight: 0.6
+  _maxStamina: 10
+  _staminaTimeToRegen: 3
+  _staminaDecreasePerFrame: 1
+  _staminaIncreasePerFrame: 1
+  _runJumpStaminaDecrease: 2
+  _maxPower: 800
+  _powerIncreasePerFrame: 400
+  _flashDistance: 4
+  _flashCooldown: 5
+  _numberOfFlashes: 1
+  _numberOfEnergyDrinks: 1
+  _numberOfBottles: 1
+  _defaultHearingZoneRadius: 6
+  _walkHearingZoneRadius: 7
+  _sneakHearingZoneRadius: 6.5
+  _runHearingZoneRadius: 8
+  _landingHearingZoneCoefficient: 1.2
+  _mouseSensitivity: 800
+  _numberOfFlashesToAdd: 1
+  _numberOfEnergyDrinksToAdd: 1
+  _numberOfBottlesToAdd: 1
+  _flashDistanceToAdd: 0.1
+  _flashCooldownToDecrease: 0.1
+  _defaultLightIntensity: 10
+  _flashLightIntensity: 50
+  _waitForDeath: 4.5
