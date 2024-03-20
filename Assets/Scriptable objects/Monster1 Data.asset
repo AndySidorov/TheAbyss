@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 5
   _flashCooldown: 5
-  _stopToChaseDistance: 1
   _timeBeforeChase: 2
+  _stoppingDistance: 0.95
