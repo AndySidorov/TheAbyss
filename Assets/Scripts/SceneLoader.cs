@@ -3,9 +3,9 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
-    [SerializeField, Scene] private string _sceneName;
+    [SerializeField, Scene] private string _sceneName; // Следующая сцена 
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other) // Загрузить следующий уровень и сохранить прогресс
     {
         if (other.CompareTag("Player"))
         {

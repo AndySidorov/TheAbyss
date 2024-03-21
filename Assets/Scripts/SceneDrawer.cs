@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
+// Кастомный скрипт для сериализации сцен в инспекторе, нужно переносить из проекта перед билдом, потом можно вернуть
 [CustomPropertyDrawer (typeof (SceneAttribute))]
 public class SceneDrawer : PropertyDrawer {
 	
