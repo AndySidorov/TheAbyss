@@ -142,9 +142,9 @@ public class PlayerMovement : MonoBehaviour
         if (!_isGrounded || _isJumpingExtraTime) // Если игрок не на земле или действует доп время для отрыва от земли
         {
             status = 4; // Задать анимацию isJumping
-            _currentSpeed = _lastSpeed; // Поменять текущую скорость на последнюю имевшуюся до прыжка (чтоб игрок не менял скорость во время прыжка)
+            _currentSpeed = _lastSpeed; // Поменять текущую скорость на последнюю имевшуюся до прыжка (чтоб игрок не менял скорость во время прыжка) или падения
             _currentZoneRadius = _lastZoneRadius; // Поменять текущую зону обнаружения на последнюю имевшуюся
-            _isJumping = true; // Сохранить значение нахождения в прыжке
+            _isJumping = true; // Сохранить значение нахождения в прыжке (полете)
         }
         else if (_isMoving) // Если игрок двигается и не прыгает
         {
@@ -211,6 +211,10 @@ public class PlayerMovement : MonoBehaviour
             _staminaRegenTimer = 0.0f;
             isDrinking = false;
         }
+        
+        // Сохраняем последние значения перед прыжком или падением
+        _lastZoneRadius = _currentZoneRadius;
+        _lastSpeed = _currentSpeed;
 
         _controller.Move( transform.rotation * input * (_currentSpeed * Time.deltaTime)); // Двигаем игрока с нужной скоростью
         _animator.SetInteger("Status", status); // Ставим нужную анимацию
