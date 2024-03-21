@@ -1,7 +1,8 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 
-[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(NavMeshAgent))]
 public class MonsterMovement : MonoBehaviour
 {
     [SerializeField] private MonsterData _monsterData;
@@ -18,16 +19,19 @@ public class MonsterMovement : MonoBehaviour
     private bool _dontMove;
     
     private Animator _animator;
-    private CharacterController _controller;
+    private NavMeshAgent _agent;
     private AudioSource _audio;
     
-    //Status: 0 - idle, 1 - roar, 2 - run, 3 - flashed
+    // Анимации: 0 - idle, 1 - roar, 2 - run, 3 - flashed
 
     private void Awake()
     {
-        _controller = GetComponent<CharacterController>();
+        _agent = GetComponent<NavMeshAgent>();
         _animator = GetComponentInChildren<Animator>();
         _audio = GetComponentInChildren<AudioSource>();
+        
+        _agent.speed = _monsterData.Speed;
+        _agent.stoppingDistance = _monsterData.StoppingDistance;
         
         _audio.clip = _monsterSounds.Idle;
         _audio.loop = true;
@@ -36,9 +40,9 @@ public class MonsterMovement : MonoBehaviour
 
     private void Update()
     {
-        if (isKilling) 
+        if (isKilling) // Запустить убийство, если монстр достиг игрока (isKilling меняется скриптом на игроке)
             Kill();
-        if (Time.timeScale != 0 && !_dontMove)
+        if (Time.timeScale != 0 && !_dontMove) // Если игра не на паузе или монстр не в режиме убийства
         {
             Move();
         }
@@ -46,68 +50,73 @@ public class MonsterMovement : MonoBehaviour
 
     private void Move()
     {
-        _controller.Move(new Vector3(0, -9.8f, 0) * Time.deltaTime);
-        if (!_isFlashCooldown)
+        if (!_isFlashCooldown) // Если монстр не ослеплен (нужен, чтобы не запускать корутин FlashRoutine бесконечно)
         {
-            if (isFlashed)
+            if (isFlashed) // Если игрок ослепил монстра (isFlashed меняется скриптом на игроке)
             {
                 StartCoroutine(FlashRoutine());
             }
-            else if (isChasing && !_isRoarCooldown)
+            else if (isChasing && !_isRoarCooldown) // Если монстр в режиме преследования (isChasing меняется скриптом на игроке) и перестал (или не начал) рычать
             {
-                if (_isFirstTime)
+                if (_isFirstTime) // Если еще не рычал
                 {
                     var direction = playerPosition - transform.position;
-                    transform.forward = new Vector3(direction.x, 0, direction.z);
+                    transform.forward = new Vector3(direction.x, 0, direction.z); // Повернуться к игроку
                     StartCoroutine(ChaseRoutine());
                 }
                 else
                 {
-                    var monsterXZ = new Vector2(transform.position.x, transform.position.z);
-                    var playerXZ = new Vector2(playerPosition.x, playerPosition.z);
-                    if (Vector2.Distance(monsterXZ, playerXZ) < 0.95f)
+                    var monsterXZ = new Vector2(transform.position.x, transform.position.z); // Координаты монстра в плоскости XZ
+                    var playerXZ = new Vector2(playerPosition.x, playerPosition.z); // Координаты игрока или бутылки в плоскости XZ
+                    // Y не используется, потому что бутылка может удариться об потолок и не сработает код сброса цели
+                    
+                    if (Vector2.Distance(monsterXZ, playerXZ) < _monsterData.StoppingDistance) // Если монстр почти достиг цели, то ее надо сбросить
                     {
-                        isChasing = false;
-                        _isFirstTime = true;
+                        _agent.SetDestination(gameObject.transform.position); // Убрать цель (сразу тормозит таким образом)
+                        
+                        isChasing = false; // Отменить преследование
+                        _isFirstTime = true; // Снова зарычит, если увидит
                         
                         _audio.clip = _monsterSounds.Idle;
                         _audio.loop = true;
                         _audio.Play();
                         
-                        _animator.SetInteger("Status", 0);
+                        _animator.SetInteger("Status", 0); // Анимация спокойствия
                     }
-                    else
+                    else // Если монстр только закончил рычать или еще не достиг цель (последнюю переданную)
                     {
-                        var direction = playerPosition - transform.position;
-                        transform.forward = new Vector3(direction.x, 0, direction.z);
-                        _controller.Move( transform.forward * (_monsterData.Speed * Time.deltaTime));
+                        _agent.SetDestination(playerPosition); // Задать цель (playerPosition меняется скриптом на игроке, передается вместе с isChasing)
                     }
                 }
             }
         }
     }
-
+    
+    // Монстр убивает
     private void Kill()
     {
-        isKilling = false;
-        _dontMove = true;
+        _agent.SetDestination(gameObject.transform.position); // Удаление цели (сразу тормозит таким образом)
+        
+        isKilling = false; // Не дать функции убийства запуститься несколько раз
+        _dontMove = true; // Прервать все действия монстра
         
         var direction = playerPosition - transform.position;
-        transform.forward = new Vector3(direction.x, 0, direction.z);
+        transform.forward = new Vector3(direction.x, 0, direction.z); // Повернуть монстра к нам
         
         _audio.clip = _monsterSounds.Roar;
         _audio.loop = false;
         _audio.Play();
 
-        _animator.SetInteger("Status", 3);
+        _animator.SetInteger("Status", 3); // Анимация убийства
     }
-
+    
+    // Монстр рычит и дает фору перед атакой
     private IEnumerator ChaseRoutine()
     {
-        _isRoarCooldown = true;
-        _isFirstTime = false;
+        _isRoarCooldown = true; // Задержка на рык
+        _isFirstTime = false; // Не дать корутину запускаться бесконечно
         
-        _animator.SetInteger("Status", 1);
+        _animator.SetInteger("Status", 1); // Анимация крика
         
         _audio.clip = _monsterSounds.Roar;
         _audio.loop = false;
@@ -115,11 +124,11 @@ public class MonsterMovement : MonoBehaviour
         
         yield return new WaitForSeconds(_monsterData.TimeBeforeChase);
 
-        if (!_isFlashCooldown && !_dontMove)
+        if (!_isFlashCooldown && !_dontMove) // Если монстра не успели ослепить
         {
-            _isRoarCooldown = false;
+            _isRoarCooldown = false; // Снять задержку на рык
         
-            _animator.SetInteger("Status", 2);
+            _animator.SetInteger("Status", 2); // Анимация бега
         
             _audio.clip = _monsterSounds.Run;
             _audio.loop = true;
@@ -127,35 +136,39 @@ public class MonsterMovement : MonoBehaviour
         }
     }
     
+    // Монстр ослеплен на определенное время
     private IEnumerator FlashRoutine()
     {
-        _isFlashCooldown = true;
-        _isRoarCooldown = false;
+        _agent.SetDestination(gameObject.transform.position); // Удаление цели (сразу тормозит таким образом)
+        
+        _isFlashCooldown = true; // Ослепление, прерывающее все действия (не запускать корутин ослепления бесконечно)
+        _isRoarCooldown = false; // Прервать крик, если монстр ослеплен во время рыка
+        isChasing = false; // Сбросить режим преследования
         
         _audio.clip = _monsterSounds.Flashed;
         _audio.loop = false;
         _audio.Play();
         
-        _animator.SetInteger("Status", 4);
+        _animator.SetInteger("Status", 4); //  Анимация ослепления
         
         yield return new WaitForSeconds(_monsterData.FlashCooldown);
         
-        _isFlashCooldown = false;
-        _isFirstTime = true;
-        isFlashed = false;
-        isChasing = false;
+        _isFlashCooldown = false; // Ослепление прошло
+        _isFirstTime = true; // Монстр снова зарычит, если нас заметит
+        isFlashed = false; // Корутин снова можно будет запустить
         
         _audio.clip = _monsterSounds.Idle;
         _audio.loop = true;
         _audio.Play();
         
-        _animator.SetInteger("Status", 0);
+        _animator.SetInteger("Status", 0); // Анимация спокойствия
     }
-
+    
+    // Монстры не начинают кряхтеть в один и тот же момент
     private IEnumerator SoundRoutine()
     {
-        yield return new WaitForSeconds(Random.Range(0f, 3f));
-        if (!_isFlashCooldown && !isChasing && !_dontMove)
+        yield return new WaitForSeconds(Random.Range(0f, 3f)); // Ожидание от 0 до 3 секунд
+        if (!_isFlashCooldown && !isChasing && !_dontMove) // Если ничего не произошло за это время
             _audio.Play();
     }
 }

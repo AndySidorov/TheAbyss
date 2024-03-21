@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 
+// Скрипт на MenuManager Empty GameObject отвечающий за настройки
 public class GameSettings : MonoBehaviour
 {
     [SerializeField] private AudioMixer _mixer;
@@ -22,7 +23,8 @@ public class GameSettings : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _monsterText;
     [SerializeField] private TextMeshProUGUI _ambientText;
     [SerializeField] private TextMeshProUGUI _mouseSensitivityText;
-
+    
+    // Задать сохраненные (если есть) или дефолтные громкости звука и чувствительность мыши, подвинуть ползунки на нужные места, отобразить числа
     private void Start()
     {
         _playerVolume = PlayerPrefs.HasKey("Player Volume") ? PlayerPrefs.GetFloat("Player Volume") : 0;
@@ -44,7 +46,9 @@ public class GameSettings : MonoBehaviour
         _mouseSensitivitySlider.value = Mathf.InverseLerp(200, 1000, _mouseSensitivity);
         _mouseSensitivityText.text = _mouseSensitivity.ToString("F2");
     }
-
+    
+    // Срабатывают при изменении положения ползунка: меняют громкость звука или чувствительность, отображаемые числа, сохраняют настройки
+    
     public void PlayerVolumeChange()
     {
         var volume = Mathf.Lerp(-80f, 20f, _playerSlider.value);
@@ -76,6 +80,7 @@ public class GameSettings : MonoBehaviour
         _mouseSensitivityText.text = value.ToString("F2");
     }
     
+    // Сброс к дефолтным настройкам при нажатии кнопки: дефолтные громкость звука и чувствительность, отображаемые числа, сохраняются дефолтные настройки
     public void DefaultSettings()
     {
         _playerSlider.value = Mathf.InverseLerp(-80f, 20f, 0);
