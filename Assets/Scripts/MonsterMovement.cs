@@ -40,7 +40,7 @@ public class MonsterMovement : MonoBehaviour
 
     private void Update()
     {
-        if (isKilling) // Запустить убийство, усли монстр достиг игрока (isKilling меняется скриптом на игроке)
+        if (isKilling) // Запустить убийство, если монстр достиг игрока (isKilling меняется скриптом на игроке)
             Kill();
         if (Time.timeScale != 0 && !_dontMove) // Если игра не на паузе или монстр не в режиме убийства
         {
@@ -143,6 +143,7 @@ public class MonsterMovement : MonoBehaviour
         
         _isFlashCooldown = true; // Ослепление, прерывающее все действия (не запускать корутин ослепления бесконечно)
         _isRoarCooldown = false; // Прервать крик, если монстр ослеплен во время рыка
+        isChasing = false; // Сбросить режим преследования
         
         _audio.clip = _monsterSounds.Flashed;
         _audio.loop = false;
@@ -155,7 +156,6 @@ public class MonsterMovement : MonoBehaviour
         _isFlashCooldown = false; // Ослепление прошло
         _isFirstTime = true; // Монстр снова зарычит, если нас заметит
         isFlashed = false; // Корутин снова можно будет запустить
-        isChasing = false; // Сбросить режим преследования, если монстр успел в него войти (isChasing меняется скриптом на игроке)
         
         _audio.clip = _monsterSounds.Idle;
         _audio.loop = true;

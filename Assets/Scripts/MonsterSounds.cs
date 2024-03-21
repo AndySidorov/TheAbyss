@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Scriptable object со звуками для монстров
 [CreateAssetMenu (fileName = "Monster Sounds", menuName = "Custom/MonsterSounds", order = 4)]
 public class MonsterSounds : ScriptableObject
 {

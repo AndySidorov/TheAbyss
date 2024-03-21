@@ -18,31 +18,35 @@ public class BottleThrow : MonoBehaviour
         _audio.Play();
     }
 
-    private void OnCollisionEnter(Collision other)
+    private void OnCollisionEnter(Collision other) // При столкновении
     {
-        if (!_isBreaking)
+        if (!_isBreaking) // Если не сталкивался до этого
         {
-            var hits = Physics.OverlapSphere(transform.position, _bottleData.BreakingRadius);
-            foreach (var hit in hits) 
+            var hits = Physics.OverlapSphere(transform.position, _bottleData.BreakingRadius); // Создать сферу пересечений
+            foreach (var hit in hits) // Для всех попавших в сферу объектов
             { 
                 var hitGameObject = hit.gameObject; 
-                if (hitGameObject.CompareTag("Monster"))
+                if (hitGameObject.CompareTag("Monster")) // Если тэг монстр
                 { 
                     var monsterMovement = hitGameObject.GetComponentInParent<MonsterMovement>(); 
-                    monsterMovement.isChasing = true; 
-                    monsterMovement.playerPosition = transform.position; 
+                    monsterMovement.isChasing = true; // Монстра перевести в режим преследования
+                    monsterMovement.playerPosition = transform.position; // Передать местоположение бутылки
                 }
             }
             StartCoroutine(BreakingRoutine());
         }
     }
-
+    
+    // Издать звук разбиения и исчезнуть через время
     private IEnumerator BreakingRoutine()
     {
         _audio.clip = _bottleData.BreakingSound;
         _audio.Play();
+        
         _isBreaking = true;
+        
         yield return new WaitForSeconds(2f);
+        
         Destroy(gameObject);
     }
 }

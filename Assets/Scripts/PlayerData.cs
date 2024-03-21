@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Scriptable object со всеми переменными для игрока
 [CreateAssetMenu(fileName = "Default Player Data", menuName = "Custom/Player", order = 0)]
 public class PlayerData : ScriptableObject
 {
@@ -13,11 +14,11 @@ public class PlayerData : ScriptableObject
     [SerializeField] private float _staminaTimeToRegen;
     [SerializeField] private float _staminaDecreasePerFrame;
     [SerializeField] private float _staminaIncreasePerFrame;
-    [SerializeField] private float _runJumpStaminaDecrease;
-    [SerializeField] private float _maxPower;
-    [SerializeField] private float _powerIncreasePerFrame;
+    [SerializeField] private float _runJumpStaminaDecrease; // Количество стамины удаляемое при прыжке во время бега
+    [SerializeField] private float _maxPower; // Максимальная сила броска
+    [SerializeField] private float _powerIncreasePerFrame; // Сколько силы броска прибавляется в секунду
     [SerializeField] private float _flashDistance;
-    [SerializeField] private float _flashCooldown;
+    [SerializeField] private float _flashCooldown; // Время перезарядки
     [SerializeField] private int _numberOfFlashes;
     [SerializeField] private int _numberOfEnergyDrinks;
     [SerializeField] private int _numberOfBottles;
@@ -25,16 +26,16 @@ public class PlayerData : ScriptableObject
     [SerializeField] private float _walkHearingZoneRadius;
     [SerializeField] private float _sneakHearingZoneRadius;
     [SerializeField] private float _runHearingZoneRadius;
-    [SerializeField] private float _landingHearingZoneCoefficient;
+    [SerializeField] private float _landingHearingZoneCoefficient; // Как сильно увеличивается зона слышимости при приземлении
     [SerializeField] private float _mouseSensitivity;
     [SerializeField] private int _numberOfFlashesToAdd;
     [SerializeField] private int _numberOfEnergyDrinksToAdd;
     [SerializeField] private int _numberOfBottlesToAdd;
     [SerializeField] private float _flashDistanceToAdd;
     [SerializeField] private float _flashCooldownToDecrease;
-    [SerializeField] private float _defaultLightIntensity;
-    [SerializeField] private float _flashLightIntensity;
-    [SerializeField] private float _waitForDeath;
+    [SerializeField] private float _defaultLightIntensity; // Яркость обычного фонарика
+    [SerializeField] private float _flashLightIntensity; // Яркость вспышки
+    [SerializeField] private float _waitForDeath; // Сколкьо времени ждать после убийства
     
     public float DefaultSpeed => _defaultSpeed;
     public float SneakSpeed => _sneakSpeed;

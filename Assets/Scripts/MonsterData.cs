@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Scriptable object с переменными для монстров
 [CreateAssetMenu(fileName = "Monster Data", menuName = "Custom/Monster", order = 3)]
 public class MonsterData : ScriptableObject
 {
