@@ -24,7 +24,6 @@ public class PlayerMovement : MonoBehaviour
     public AudioSource[] AllAudio => _allAudio;
 
     private float _currentSpeed;
-    private float _currentJumpHeight;
     private float _currentZoneRadius;
     private float _currentStamina;
     private float _staminaRegenTimer;
@@ -59,14 +58,14 @@ public class PlayerMovement : MonoBehaviour
         _audio = GetComponentInChildren<AudioSource>();
         _allAudio = FindObjectsOfType<AudioSource>(); // Нужно, чтобы выключить все звуки при нажатии паузы или при смерти
         
-        // Задать последние значения для прыжка на случай, если игрок сразу прыгнет
-        _lastSpeed = _playerData.DefaultSpeed;
-        _lastZoneRadius = _playerData.DefaultHearingZoneRadius;
-        
         // Изначально задать максимальную стамину
         _currentStamina = _playerData.MaxStamina;
         
-        _radii = new List<float>(){_killingZoneRadius, _playerData.DefaultHearingZoneRadius}; // Радиусы для сфер пересечений
+        _radii = new List<float>(){_killingZoneRadius, _playerData.WalkHearingZoneRadius}; // Радиусы для сфер пересечений
+        
+        // Записываем последние значения на случай, если игрок появится в воздухе
+        _lastSpeed = _playerData.WalkSpeed;
+        _lastZoneRadius = _playerData.WalkHearingZoneRadius;
         
         // Запустить обычный звук
         _audio.clip = _playerSounds.Idle;
@@ -84,6 +83,7 @@ public class PlayerMovement : MonoBehaviour
             CheckKeyDown();
             if (Time.timeScale != 0)
             {
+                _isGrounded = CheckGrounded();
                 Move();
                 Jump();
                 Look();
@@ -119,13 +119,6 @@ public class PlayerMovement : MonoBehaviour
     // Все, связанное с передвижением
     private void Move()
     {
-        // Изначально задать дефолтные значения переменным, потом могуть поменяться
-        _currentSpeed = _playerData.DefaultSpeed;
-        _currentJumpHeight = _playerData.DefaultJumpHeight;
-        _currentZoneRadius = _playerData.DefaultHearingZoneRadius;
-        
-        _isGrounded = CheckGrounded();
-        
         var input = new Vector3(
             Input.GetAxis("Horizontal"),
             0,
@@ -136,64 +129,86 @@ public class PlayerMovement : MonoBehaviour
         _isMoving = input != Vector3.zero;
         
         // Анимации: 0 - idle, 1 - isWalking, 2 - isRunning, 3 - isSneaking, 4 - isJumping
-        
-        var status = _isMoving ? 1:0; // Если игрок не двигается, то задать ему анимацию idle, иначе isWalking
+        int status;
 
-        if (!_isGrounded || _isJumpingExtraTime) // Если игрок не на земле или действует доп время для отрыва от земли
+        if (!_isGrounded || _isJumping) // Если игрок не на земле или в режиме прыжка
         {
             status = 4; // Задать анимацию isJumping
-            _currentSpeed = _lastSpeed; // Поменять текущую скорость на последнюю имевшуюся до прыжка (чтоб игрок не менял скорость во время прыжка) или падения
-            _currentZoneRadius = _lastZoneRadius; // Поменять текущую зону обнаружения на последнюю имевшуюся
-            _isJumping = true; // Сохранить значение нахождения в прыжке (полете)
-        }
-        else if (_isMoving) // Если игрок двигается и не прыгает
-        {
-            _currentZoneRadius = _playerData.WalkHearingZoneRadius; // Изначально задать зону обнаружения для шага
             
-            if (_isRunning && _currentStamina > 0) // Если игрок бежит и у него еще есть стамина
-            {
-                status = 2; // Анимация бега
-                _currentSpeed = _playerData.RunSpeed; // Поменять текущую скорость на скорость бега
-                _currentJumpHeight = _playerData.RunJumpHeight; // Поменять текущую высоту прыжка на высоту прыжка для бега
-                _currentZoneRadius = _playerData.RunHearingZoneRadius; // Поменять текущую зону обнаружения
-                
-                // Уменьшить текущее количество стамины (не выходя за рамки)
-                _currentStamina = Mathf.Clamp(_currentStamina - (_playerData.StaminaDecreasePerFrame * Time.deltaTime), 0.0f, _playerData.MaxStamina);
-                _staminaRegenTimer = 0.0f; // Сбросить таймер восстановления стамины (нужно снова ждать начала восстановления)
-
-                if (_audio.clip != _playerSounds.Run) // Если еще не играет звук бега (чтобы не запускать его с начала каждый раз)
-                {
-                    _audio.clip = _playerSounds.Run;
-                    _audio.loop = true;
-                    _audio.Play();
-                }
-            }
-            else if (_isSneaking) // Если игрок крадется
-            {
-                status = 3; // Анимация подкрадывания
-                _currentSpeed = _playerData.SneakSpeed; // Поменять параметры
-                _currentJumpHeight = _playerData.SneakJumpHeight;
-                _currentZoneRadius = _playerData.SneakHearingZoneRadius;
-
-                if (_audio.clip != _playerSounds.Sneak) // Если еще не играет звук подкрадывания (чтобы не запускать его с начала каждый раз)
-                {
-                    _audio.clip = _playerSounds.Sneak;
-                    _audio.loop = true;
-                    _audio.Play();
-                }
-            }
-            else if (_audio.clip != _playerSounds.Walk) // Иначе включен режим шага, проверяем включен ли звук шага
-            {
-                _audio.clip = _playerSounds.Walk;
-                _audio.loop = true;
-                _audio.Play();
-            }
+            _currentSpeed = _lastSpeed; // Поменять текущую скорость на последнюю имевшуюся до прыжка (чтоб игрок не менял скорость во время прыжка)
+            _currentZoneRadius = _lastZoneRadius; // Поменять текущую зону обнаружения на последнюю имевшуюся
+            
+            _isJumping = true; // Меняем значение на true, если падаем (чтобы был звук приземления)
         }
-        else if (_audio.clip != _playerSounds.Idle) // Иначе игрок стоит, проверяем включен ли звук
+        else // Если игрок не прыгает
         {
-            _audio.clip = _playerSounds.Idle;
-            _audio.loop = true;
-            _audio.Play();
+            if (_isMoving) // Если игрок двигается
+            {
+                if (_isRunning && _currentStamina > 0) // Если игрок в режиме бега и у него еще есть стамина
+                {
+                    status = 2; // Анимация бега
+                    
+                    _currentSpeed = _playerData.RunSpeed; // Поменять текущую скорость на скорость бега
+                    _currentZoneRadius = _playerData.RunHearingZoneRadius; // Поменять текущую зону обнаружения
+
+                    // Уменьшить текущее количество стамины (не выходя за рамки)
+                    _currentStamina = Mathf.Clamp(_currentStamina - (_playerData.StaminaDecreasePerFrame * Time.deltaTime), 0.0f, _playerData.MaxStamina);
+                    _staminaRegenTimer = 0.0f; // Сбросить таймер восстановления стамины (нужно снова ждать начала восстановления)
+
+                    if (_audio.clip != _playerSounds.Run) // Если еще не играет звук бега (чтобы не запускать его с начала каждый раз)
+                    {
+                        _audio.clip = _playerSounds.Run;
+                        _audio.loop = true;
+                        _audio.Play();
+                    }
+                }
+                else if (_isSneaking) // Если игрок в режиме подкрадывания
+                {
+                    status = 3; // Анимация подкрадывания
+                    
+                    _currentSpeed = _playerData.SneakSpeed;
+                    _currentZoneRadius = _playerData.SneakHearingZoneRadius;
+
+                    if (_audio.clip != _playerSounds.Sneak) // Если еще не играет звук подкрадывания (чтобы не запускать его с начала каждый раз)
+                    {
+                        _audio.clip = _playerSounds.Sneak;
+                        _audio.loop = true;
+                        _audio.Play();
+                    }
+                }
+                else // Иначе игрок идет
+                {
+                    status = 1; // Анимация шага
+                    
+                    _currentSpeed = _playerData.WalkSpeed;
+                    _currentZoneRadius = _playerData.WalkHearingZoneRadius;
+
+                    if (_audio.clip != _playerSounds.Walk) // Проверяем включен ли звук шага
+                    {
+                        _audio.clip = _playerSounds.Walk;
+                        _audio.loop = true;
+                        _audio.Play();
+                    }
+                }
+            }
+            else // Иначе игрок стоит
+            {
+                status = 0; // Анимация idle
+                
+                _currentSpeed = _playerData.WalkSpeed;
+                _currentZoneRadius = _playerData.IdleHearingZoneRadius;
+                    
+                if (_audio.clip != _playerSounds.Idle) // Проверяем включен ли звук
+                {
+                    _audio.clip = _playerSounds.Idle;
+                    _audio.loop = true;
+                    _audio.Play();
+                }
+            }
+            
+            // Сохраняем последние значения до падения, чтобы они использовались во время полета
+            _lastSpeed = _currentSpeed;
+            _lastZoneRadius = _currentZoneRadius;
         }
         
         // Если текущая стамина меньше максимально возможной, а игрок не бежит или не двигается (даже с нажатой кнопкой shift), прыгает (не прерывать стамину, если игрок нажал shift в полете)
@@ -211,10 +226,6 @@ public class PlayerMovement : MonoBehaviour
             _staminaRegenTimer = 0.0f;
             isDrinking = false;
         }
-        
-        // Сохраняем последние значения перед прыжком или падением
-        _lastZoneRadius = _currentZoneRadius;
-        _lastSpeed = _currentSpeed;
 
         _controller.Move( transform.rotation * input * (_currentSpeed * Time.deltaTime)); // Двигаем игрока с нужной скоростью
         _animator.SetInteger("Status", status); // Ставим нужную анимацию
@@ -224,36 +235,57 @@ public class PlayerMovement : MonoBehaviour
     {
         if (_isGrounded) // Если сработал рейкаст
         {
-            if (!_isJumpingExtraTime) // И мы не переходим на прыжок
+            if (!_isJumpingExtraTime) // Если мы не переходим на прыжок
             {
                 _verticalVelocity = -2f; // Прилипаем к земле, чтобы игрок не подскакивал на каждой кочке
 
-                if (_isJumping) // И мы уже были в прыжке (приземляемся)
+                if (_isJumping) // Если мы уже были в прыжке (приземляемся)
                 {
                     _isJumping = false;
+                    
                     // Увеличиваем зону обнаружения на нужный коэффициент (звук громче при приземлении)
                     _currentZoneRadius = _lastZoneRadius * _playerData.LandingHearingZoneCoefficient;
+                    
                     _audio.PlayOneShot(_playerSounds.Jumped); // Сыграть звук приземления
                 }
             }
 
             if (Input.GetKeyDown(KeyCode.Space)) // Если нажат space
             {
-                // Задаем правильную вертикальную скорость по формуле (исходя из текущей высоты прыжка)
-                _verticalVelocity = Mathf.Sqrt(_currentJumpHeight * -3.0f * _gravityValue); 
                 _isJumping = true; // Переходим на прыжок
                 
-                // Сохраняем последние значения до прыжка, чтобы они использовались во время прыжка
-                _lastZoneRadius = _currentZoneRadius;
-                _lastSpeed = _currentSpeed;
-                
-                StartCoroutine(JumpingRoutine()); // Даем дополнительное время, чтобы оторваться от земли
-                
-                if (_isRunning && _isMoving && _currentStamina > 0) // Если игрок в режиме бега, при этом движется и у него еще есть стамина
+                float jumpHeight;
+
+                if (_isRunning && _currentStamina - _playerData.RunJumpStaminaDecrease >= 0) // Если игрок в режиме бега и у него еще есть нужная стамина
                 {
-                    _currentStamina -= _playerData.RunJumpStaminaDecrease; // Отнимаем часть стамины
-                    if (_currentStamina < 0) _currentStamina = 0; // Зануляем, если отняли слишком много
+                    _currentSpeed = _playerData.RunSpeed;
+                    _currentZoneRadius = _playerData.RunHearingZoneRadius;
+                    jumpHeight = _playerData.RunJumpHeight;
+                    
+                    _currentStamina -= _playerData.RunJumpStaminaDecrease; // Отнять стамину
+                    _staminaRegenTimer = 0.0f; // Сбросить таймер восстановления стамины (нужно снова ждать начала восстановления)
                 }
+                else if (_isSneaking) // Если игрок в режиме подкрадывания
+                {
+                    _currentSpeed = _playerData.SneakSpeed;
+                    _currentZoneRadius = _playerData.SneakHearingZoneRadius;
+                    jumpHeight = _playerData.SneakJumpHeight;
+                }
+                else // Если игрок стоит или идет
+                {
+                    _currentSpeed = _playerData.WalkSpeed;
+                    _currentZoneRadius = _playerData.WalkHearingZoneRadius;
+                    jumpHeight = _playerData.WalkJumpHeight;
+                }
+                
+                // Сохраняем последние значения до падения, чтобы они использовались во время полета
+                _lastSpeed = _currentSpeed;
+                _lastZoneRadius = _currentZoneRadius;
+                
+                // Задаем правильную вертикальную скорость по формуле (исходя из текущей высоты прыжка)
+                _verticalVelocity = Mathf.Sqrt(jumpHeight * -3.0f * _gravityValue);
+
+                StartCoroutine(JumpingRoutine()); // Даем дополнительное время, чтобы оторваться от земли
                 
                 _audio.clip = _playerSounds.Jump;
                 _audio.loop = false;
