@@ -12,12 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f84f9ec4082504fb6152ef4114bfb1, type: 3}
   m_Name: Default Player Data
   m_EditorClassIdentifier: 
-  _defaultSpeed: 2
+  _walkSpeed: 2
   _sneakSpeed: 1.2
   _runSpeed: 4
-  _defaultJumpHeight: 0.5
+  _walkJumpHeight: 0.5
   _sneakJumpHeight: 0.4
   _runJumpHeight: 0.6
+  _idleHearingZoneRadius: 6
+  _walkHearingZoneRadius: 7
+  _sneakHearingZoneRadius: 6.5
+  _runHearingZoneRadius: 8
+  _landingHearingZoneCoefficient: 1.2
   _maxStamina: 10
   _staminaTimeToRegen: 3
   _staminaDecreasePerFrame: 1
@@ -30,11 +35,6 @@ MonoBehaviour:
   _numberOfFlashes: 1
   _numberOfEnergyDrinks: 1
   _numberOfBottles: 1
-  _defaultHearingZoneRadius: 6
-  _walkHearingZoneRadius: 7
-  _sneakHearingZoneRadius: 6.5
-  _runHearingZoneRadius: 8
-  _landingHearingZoneCoefficient: 1.2
   _mouseSensitivity: 800
   _numberOfFlashesToAdd: 1
   _numberOfEnergyDrinksToAdd: 1
