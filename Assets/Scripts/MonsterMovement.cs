@@ -85,12 +85,34 @@ public class MonsterMovement : MonoBehaviour
                     }
                     else // Если монстр только закончил рычать или еще не достиг цель (последнюю переданную)
                     {
+                        // if (!IsDestinationReachable())
+                        // {
+                        //     _agent.SetDestination(gameObject.transform.position);
+                        //     NavMeshHit hit;
+                        //     NavMesh.SamplePosition(gameObject.transform.position, out hit, 4f, NavMesh.AllAreas);
+                        //     playerPosition = hit.position;
+                        //     Debug.Log(hit.position);
+                        // }
+
                         _agent.SetDestination(playerPosition); // Задать цель (playerPosition меняется скриптом на игроке, передается вместе с isChasing)
                     }
                 }
             }
         }
     }
+    
+    // private bool IsDestinationReachable()
+    // {
+    //     NavMeshHit hit;
+    //     if (NavMesh.Raycast(transform.position, playerPosition, out hit, NavMesh.AllAreas))
+    //     {
+    //         return false;
+    //     }
+    //
+    //     return true;
+    // }
+    
+    
     
     // Монстр убивает
     private void Kill()
