@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 751abd92f6dd4c74eab30d3ce90ff211, type: 3}
   m_Name: Bottle Break Data
   m_EditorClassIdentifier: 
-  _breakingRadius: 10
+  _breakingRadius: 15
   _throwingSound: {fileID: 8300000, guid: 1cc9728450b81294a8e8c88210f37de3, type: 3}
   _breakingSound: {fileID: 8300000, guid: 42c9475cb2d221a409114cac3c47321d, type: 3}
