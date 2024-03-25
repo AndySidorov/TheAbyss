@@ -137,18 +137,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnMove(Vector2 input)
     {
-        if (Time.timeScale != 0)
-        {
-            _moveVector = input;
-        }
+        _moveVector = input;
     }
     
     private void OnLook(Vector2 input)
     {
-        if (Time.timeScale != 0)
-        {
-            _lookVector = input;
-        }
+        _lookVector = input;
     }
 
     private void OnRunPressed()

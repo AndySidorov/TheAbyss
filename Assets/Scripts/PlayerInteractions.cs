@@ -125,7 +125,7 @@ public class PlayerInteractions : MonoBehaviour
 
     private void OnThrowPressed()
     {
-        if (!_isPaused && _numberOfBottles > 0) // Если есть бутылки
+        if (!_playerMovement.IsDead && !_isPaused && _numberOfBottles > 0) // Если есть бутылки
         {
             _isThrowing = true; // Задать состояние броска
         }
@@ -133,7 +133,7 @@ public class PlayerInteractions : MonoBehaviour
 
     private void OnThrowReleased()
     {
-        if (!_isPaused && _isThrowing) // Если все еще в состоянии броска
+        if (!_playerMovement.IsDead && !_isPaused && _isThrowing) // Если все еще в состоянии броска
         {
             _isThrowing = false;
             _numberOfBottles -= 1;
@@ -145,14 +145,17 @@ public class PlayerInteractions : MonoBehaviour
 
     private void OnThrowStop()
     {
-        // Отменить бросок и занулить силы
-        _isThrowing = false;
-        _currentPower = 0;
+        if (!_playerMovement.IsDead && !_isPaused)
+        {
+            // Отменить бросок и занулить силы
+            _isThrowing = false;
+            _currentPower = 0;
+        }
     }
 
     private void OnFlash()
     {
-        if (!_isPaused && _numberOfFlashes > 0 && !_isFlashCooldown)
+        if (!_playerMovement.IsDead && !_isPaused && _numberOfFlashes > 0 && !_isFlashCooldown)
         {
             _numberOfFlashes--;
         
@@ -188,7 +191,7 @@ public class PlayerInteractions : MonoBehaviour
 
     private void OnTake()
     {
-        if (!_isPaused && _interactable != null) // Если видели объект
+        if (!_playerMovement.IsDead && !_isPaused && _interactable != null) // Если видели объект
         {
             _audio.PlayOneShot(_playerSounds.Collect); // Звук сбора предмета
             var item = _interactable.GetComponent<Interactable>(); // Взаимодействуем со скриптом
@@ -220,7 +223,7 @@ public class PlayerInteractions : MonoBehaviour
 
     private void OnDrink()
     {
-        if (!_isPaused && _numberOfEnergyDrinks > 0)
+        if (!_playerMovement.IsDead && !_isPaused && _numberOfEnergyDrinks > 0)
         {
             _audio.PlayOneShot(_playerSounds.Drink); // Звук питья
             onDrink?.Invoke(); // На скрипте PlayerMovement запуcкаем функцию
@@ -230,7 +233,7 @@ public class PlayerInteractions : MonoBehaviour
 
     private void OnPause()
     {
-        if (!_isPaused)
+        if (!_playerMovement.IsDead && !_isPaused)
         {
             Time.timeScale = 0; // Остановить время
         

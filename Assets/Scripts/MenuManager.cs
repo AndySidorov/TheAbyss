@@ -1,25 +1,36 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 // Скрипт на MenuManager Empty GameObject отвечающий за загрузку уровней и меню
 public class MenuManager : MonoBehaviour
 {
+    [SerializeField] private EventSystem _eventSystem;
+    
     [SerializeField] private Canvas _menu;
     [SerializeField] private Canvas _settings;
     [SerializeField] private Canvas _controls;
+    
+    [SerializeField] private GameObject _menuButton;
+    [SerializeField] private GameObject _settingsButton;
+    [SerializeField] private GameObject _controlsButton;
+    
     [SerializeField] private PlayerData _playerData;
     
     // При загрузке меню сделать курсор видимым и активировать только главный Canvas, остальные отключить (если они есть)
     private void Awake()
     {
         Cursor.visible = true;
+        
         if (_menu != null)
-            _menu.enabled = true;
+            _menu.gameObject.SetActive(true);
         if (_settings != null)
-            _settings.enabled = false;
+            _settings.gameObject.SetActive(false);
         if (_controls != null)
-            _controls.enabled = false;
+            _controls.gameObject.SetActive(false);
+
+        _eventSystem.SetSelectedGameObject(_menuButton);
     }
     
     // Отключить курсор при выходе из меню
@@ -77,28 +88,36 @@ public class MenuManager : MonoBehaviour
     // Загрузить Canvas с настройками
     public void LoadSettings()
     {
-        _settings.enabled = true;
-        _menu.enabled = false;
+        _settings.gameObject.SetActive(true);
+        _menu.gameObject.SetActive(false);
+        
+        _eventSystem.SetSelectedGameObject(_settingsButton);
     }
     
     // Отгрузить Canvas с настройками
     public void UnloadSettings()
     {
-        _menu.enabled = true;
-        _settings.enabled = false;
+        _menu.gameObject.SetActive(true);
+        _settings.gameObject.SetActive(false);
+        
+        _eventSystem.SetSelectedGameObject(_menuButton);
     }
     
     // Загрузить Canvas с управлением
     public void LoadControls()
     {
-        _controls.enabled = true;
-        _menu.enabled = false;
+        _controls.gameObject.SetActive(true);
+        _menu.gameObject.SetActive(false);
+        
+        _eventSystem.SetSelectedGameObject(_controlsButton);
     }
     
     // Отгрузить Canvas с управлением
     public void UnloadControls()
     {
-        _menu.enabled = true;
-        _controls.enabled = false;
+        _menu.gameObject.SetActive(true);
+        _controls.gameObject.SetActive(false);
+        
+        _eventSystem.SetSelectedGameObject(_menuButton);
     }
 }
