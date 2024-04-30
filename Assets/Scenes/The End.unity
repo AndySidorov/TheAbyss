@@ -336,7 +336,7 @@ GameObject:
   m_Component:
   - component: {fileID: 181131300}
   - component: {fileID: 181131299}
-  - component: {fileID: 181131298}
+  - component: {fileID: 181131301}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -344,26 +344,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &181131298
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 181131297}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SendPointerHoverToParent: 1
-  m_HorizontalAxis: Horizontal
-  m_VerticalAxis: Vertical
-  m_SubmitButton: Submit
-  m_CancelButton: Cancel
-  m_InputActionsPerSecond: 10
-  m_RepeatDelay: 0.5
-  m_ForceModuleActive: 0
 --- !u!114 &181131299
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -376,7 +356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
+  m_FirstSelected: {fileID: 1528662947}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
 --- !u!4 &181131300
@@ -394,6 +374,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &181131301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 181131297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
+  m_MoveRepeatDelay: 0.5
+  m_MoveRepeatRate: 0.1
+  m_XRTrackingOrigin: {fileID: 0}
+  m_ActionsAsset: {fileID: -944628639613478452, guid: 7c1979649b4108e40884f88042df6752, type: 3}
+  m_PointAction: {fileID: 1054132383583890850, guid: 7c1979649b4108e40884f88042df6752, type: 3}
+  m_MoveAction: {fileID: 3710738434707379630, guid: 7c1979649b4108e40884f88042df6752, type: 3}
+  m_SubmitAction: {fileID: 2064916234097673511, guid: 7c1979649b4108e40884f88042df6752, type: 3}
+  m_CancelAction: {fileID: -1967631576421560919, guid: 7c1979649b4108e40884f88042df6752, type: 3}
+  m_LeftClickAction: {fileID: 8056856818456041789, guid: 7c1979649b4108e40884f88042df6752, type: 3}
+  m_MiddleClickAction: {fileID: 3279352641294131588, guid: 7c1979649b4108e40884f88042df6752, type: 3}
+  m_RightClickAction: {fileID: 3837173908680883260, guid: 7c1979649b4108e40884f88042df6752, type: 3}
+  m_ScrollWheelAction: {fileID: 4502412055082496612, guid: 7c1979649b4108e40884f88042df6752, type: 3}
+  m_TrackedDevicePositionAction: {fileID: 4754684134866288074, guid: 7c1979649b4108e40884f88042df6752, type: 3}
+  m_TrackedDeviceOrientationAction: {fileID: 1025543830046995696, guid: 7c1979649b4108e40884f88042df6752, type: 3}
+  m_DeselectOnBackgroundClick: 1
+  m_PointerBehavior: 0
+  m_CursorLockBehavior: 0
 --- !u!1001 &202713870
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1395,9 +1405,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dca432238cb0fdc4bb5dbe43d67ac990, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _eventSystem: {fileID: 181131299}
   _menu: {fileID: 0}
   _settings: {fileID: 0}
   _controls: {fileID: 0}
+  _menuButton: {fileID: 1528662947}
+  _settingsButton: {fileID: 0}
+  _controlsButton: {fileID: 0}
   _playerData: {fileID: 11400000, guid: ac7d22b9ae0c9a74ba9bd40917857ac8, type: 2}
 --- !u!1001 &685676653
 PrefabInstance:
@@ -3032,8 +3046,8 @@ MonoBehaviour:
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.6862745, g: 0.6862745, b: 0.6862745, a: 1}
+    m_SelectedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -4035,8 +4049,8 @@ MonoBehaviour:
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.6862745, g: 0.6862745, b: 0.6862745, a: 1}
+    m_SelectedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -4110,54 +4124,54 @@ CanvasRenderer:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1163324668}
-  - {fileID: 1403344585}
-  - {fileID: 614917407}
-  - {fileID: 2066815196}
-  - {fileID: 455063019}
   - {fileID: 1521221448}
   - {fileID: 181131300}
   - {fileID: 663461017}
+  - {fileID: 614917407}
+  - {fileID: 2066815196}
+  - {fileID: 455063019}
+  - {fileID: 1163324668}
   - {fileID: 417050698}
+  - {fileID: 1403344585}
   - {fileID: 1931602386}
   - {fileID: 685676653}
-  - {fileID: 971323568}
-  - {fileID: 257930078}
-  - {fileID: 1076060388}
-  - {fileID: 448888188}
-  - {fileID: 1392283155}
-  - {fileID: 1097975878}
-  - {fileID: 579802854}
-  - {fileID: 1796504620}
-  - {fileID: 1264261307}
-  - {fileID: 1621125030}
-  - {fileID: 1069473181}
-  - {fileID: 1207755374}
-  - {fileID: 1623814954}
-  - {fileID: 1554021424}
-  - {fileID: 1746011393}
-  - {fileID: 1743261506}
-  - {fileID: 1168058719}
-  - {fileID: 324332113}
-  - {fileID: 2007960413}
-  - {fileID: 1481593685}
-  - {fileID: 847027256}
-  - {fileID: 1029388425}
-  - {fileID: 1416586253}
-  - {fileID: 249335970}
-  - {fileID: 733254529}
+  - {fileID: 1407058565}
   - {fileID: 1157991186}
+  - {fileID: 1043529230}
+  - {fileID: 971323568}
   - {fileID: 210422904}
-  - {fileID: 202713870}
-  - {fileID: 1044938229}
-  - {fileID: 39381801}
-  - {fileID: 1260695420}
+  - {fileID: 579802854}
+  - {fileID: 1076060388}
+  - {fileID: 1069473181}
+  - {fileID: 1746011393}
+  - {fileID: 2007960413}
+  - {fileID: 1029388425}
+  - {fileID: 733254529}
   - {fileID: 1661294715}
   - {fileID: 941031709}
-  - {fileID: 258540541}
   - {fileID: 1717164565}
   - {fileID: 1328713587}
   - {fileID: 1826320967}
   - {fileID: 251458735}
-  - {fileID: 1043529230}
-  - {fileID: 1407058565}
+  - {fileID: 257930078}
+  - {fileID: 448888188}
+  - {fileID: 1621125030}
+  - {fileID: 1554021424}
+  - {fileID: 324332113}
+  - {fileID: 847027256}
+  - {fileID: 202713870}
+  - {fileID: 1044938229}
+  - {fileID: 39381801}
+  - {fileID: 1392283155}
+  - {fileID: 1796504620}
+  - {fileID: 1207755374}
+  - {fileID: 1168058719}
+  - {fileID: 1481593685}
+  - {fileID: 1416586253}
+  - {fileID: 249335970}
+  - {fileID: 1260695420}
+  - {fileID: 258540541}
+  - {fileID: 1097975878}
+  - {fileID: 1264261307}
+  - {fileID: 1623814954}
+  - {fileID: 1743261506}
