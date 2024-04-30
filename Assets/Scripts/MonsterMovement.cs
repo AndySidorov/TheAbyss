@@ -22,7 +22,7 @@ public class MonsterMovement : MonoBehaviour
     private NavMeshAgent _agent;
     private AudioSource _audio;
     
-    // Анимации: 0 - idle, 1 - roar, 2 - run, 3 - flashed
+    // Анимации: 0 - idle, 1 - roar, 2 - run, 3 - kill, 4 - flashed, 5 - walk
 
     private void Awake()
     {
@@ -85,15 +85,6 @@ public class MonsterMovement : MonoBehaviour
                     }
                     else // Если монстр только закончил рычать или еще не достиг цель (последнюю переданную)
                     {
-                        // if (!IsDestinationReachable())
-                        // {
-                        //     _agent.SetDestination(gameObject.transform.position);
-                        //     NavMeshHit hit;
-                        //     NavMesh.SamplePosition(gameObject.transform.position, out hit, 4f, NavMesh.AllAreas);
-                        //     playerPosition = hit.position;
-                        //     Debug.Log(hit.position);
-                        // }
-
                         _agent.SetDestination(playerPosition); // Задать цель (playerPosition меняется скриптом на игроке, передается вместе с isChasing)
                     }
                 }
