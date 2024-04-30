@@ -179,7 +179,7 @@ public class PlayerInteractions : MonoBehaviour
                         {
                             if (rayHit.collider.gameObject.CompareTag("Monster")) // Если тэг снова монстр (нет преград)
                             {
-                                hitGameObject.GetComponentInParent<MonsterMovement>().isFlashed = true; // Ослепляем монстра
+                                hitGameObject.GetComponentInParent<MonsterAI>().isFlashed = true; // Ослепляем монстра
                             }
                         }
                     }

@@ -385,10 +385,10 @@ public class PlayerMovement : MonoBehaviour
                 var hitGameObject = hit.gameObject;
                 if (hitGameObject.CompareTag("Monster")) // Если тэг монстр
                 {
-                    var monsterMovement = hitGameObject.GetComponentInParent<MonsterMovement>(); // Взаимодействуем со скриптом монстра
+                    var monsterAI = hitGameObject.GetComponentInParent<MonsterAI>(); // Взаимодействуем со скриптом монстра
                     var monsterPosition = hitGameObject.GetComponent<Transform>().position; // Местоположение головы монстра
                     var direction = monsterPosition - transform.position;
-                    if (!monsterMovement.isFlashed) // Если монстр не ослеплен
+                    if (!monsterAI.isFlashed) // Если монстр не ослеплен
                     {
                         switch (i) // Проверяем, в какой он зоне
                         {
@@ -404,15 +404,15 @@ public class PlayerMovement : MonoBehaviour
                                         
                                 _animator.SetInteger("Status", 0); // Меняем аниимацию на idle 
                                         
-                                monsterMovement.isKilling = true; // Меняем состояние монстра на убийство
+                                monsterAI.isKilling = true; // Меняем состояние монстра на убийство
                                 _isDead = true; // Забираем у игрока управление 
                                         
                                 StartCoroutine(KillingRoutine()); // Ждем скример и запускаем меню смерти
                                 break;
                                     
                             case 1: // Зона обнаружения
-                                monsterMovement.isChasing = true; // Переводим монстра в режим преследования
-                                monsterMovement.playerPosition = transform.position; // Задаем ему позицию игрока
+                                monsterAI.isChasing = true; // Переводим монстра в режим преследования
+                                monsterAI.targetPosition = transform.position; // Задаем ему позицию игрока
                                 break;
                         }
                     }

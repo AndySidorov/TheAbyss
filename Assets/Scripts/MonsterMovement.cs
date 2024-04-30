@@ -22,7 +22,7 @@ public class MonsterMovement : MonoBehaviour
     private NavMeshAgent _agent;
     private AudioSource _audio;
     
-    // Анимации: 0 - idle, 1 - roar, 2 - run, 3 - flashed
+    // Анимации: 0 - idle, 1 - roar, 2 - run, 3 - kill, 4 - flashed, 5 - walk
 
     private void Awake()
     {
@@ -91,6 +91,19 @@ public class MonsterMovement : MonoBehaviour
             }
         }
     }
+    
+    // private bool IsDestinationReachable()
+    // {
+    //     NavMeshHit hit;
+    //     if (NavMesh.Raycast(transform.position, playerPosition, out hit, NavMesh.AllAreas))
+    //     {
+    //         return false;
+    //     }
+    //
+    //     return true;
+    // }
+    
+    
     
     // Монстр убивает
     private void Kill()
