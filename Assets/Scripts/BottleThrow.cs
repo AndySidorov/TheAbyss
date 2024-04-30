@@ -28,9 +28,9 @@ public class BottleThrow : MonoBehaviour
                 var hitGameObject = hit.gameObject; 
                 if (hitGameObject.CompareTag("Monster")) // Если тэг монстр
                 { 
-                    var monsterMovement = hitGameObject.GetComponentInParent<MonsterMovement>(); 
+                    var monsterMovement = hitGameObject.GetComponentInParent<MonsterAI>(); 
                     monsterMovement.isChasing = true; // Монстра перевести в режим преследования
-                    monsterMovement.playerPosition = transform.position; // Передать местоположение бутылки
+                    monsterMovement.targetPosition = transform.position; // Передать местоположение бутылки
                 }
             }
             StartCoroutine(BreakingRoutine());

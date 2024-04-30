@@ -14,7 +14,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerSounds _playerSounds;
     [SerializeField] private Transform _head;
     [SerializeField] private Image _staminaImage;
-    
+
+    private PlayerInteractions _playerInteractions;
+    private PlayerInputHandler _playerInput;
     private CharacterController _controller;
     private Animator _animator;
     private AudioSource _audio;
@@ -28,6 +30,10 @@ public class PlayerMovement : MonoBehaviour
     private float _currentStamina;
     private float _staminaRegenTimer;
     private float _verticalVelocity;
+
+    private Vector2 _moveVector;
+    private Vector2 _lookVector;
+    private bool _isJumpPressed;
     
     // Последние значения перед прыжком
     private float _lastSpeed; 
@@ -46,13 +52,14 @@ public class PlayerMovement : MonoBehaviour
     
     // Параметры, связанные с PlayerInteractions
     public bool IsDead => _isDead;
-    [HideInInspector] public bool isDrinking;
     
     // Радиусы для сфер пересечений
     private List<float> _radii;
     
     private void Awake()
     {
+        _playerInteractions = GetComponent<PlayerInteractions>();
+        _playerInput = GetComponent<PlayerInputHandler>();
         _controller = GetComponent<CharacterController>();
         _animator = GetComponentInChildren<Animator>();
         _audio = GetComponentInChildren<AudioSource>();
@@ -80,7 +87,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!_isDead) // Забрать управление, если убит
         {
-            CheckKeyDown();
             if (Time.timeScale != 0)
             {
                 _isGrounded = CheckGrounded();
@@ -93,26 +99,79 @@ public class PlayerMovement : MonoBehaviour
         }
     }
     
-    // Проверить, какие клавиши нажаты, и задать нужный режим
-    private void CheckKeyDown()
+    private void OnEnable()
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        _playerInteractions.onDrink += OnDrink;
+        
+        _playerInput.onMove += OnMove;
+        _playerInput.onLook += OnLook;
+        
+        _playerInput.onRunPressed += OnRunPressed;
+        _playerInput.onRunReleased += OnRunReleased;
+        _playerInput.onSneakPressed += OnSneakPressed;
+        _playerInput.onSneakReleased += OnSneakReleased;
+        
+        _playerInput.onJump += OnJump;
+    }
+    
+    private void OnDisable()
+    {
+        _playerInteractions.onDrink -= OnDrink;
+        
+        _playerInput.onMove -= OnMove;
+        _playerInput.onLook -= OnLook;
+        
+        _playerInput.onRunPressed -= OnRunPressed;
+        _playerInput.onRunReleased -= OnRunReleased;
+        _playerInput.onSneakPressed -= OnSneakPressed;
+        _playerInput.onSneakReleased -= OnSneakReleased;
+        
+        _playerInput.onJump -= OnJump;
+    }
+
+    private void OnDrink()
+    {
+        _currentStamina = _playerData.MaxStamina;
+        _staminaRegenTimer = 0.0f;
+    }
+
+    private void OnMove(Vector2 input)
+    {
+        _moveVector = input;
+    }
+    
+    private void OnLook(Vector2 input)
+    {
+        _lookVector = input;
+    }
+
+    private void OnRunPressed()
+    {
+        _isRunning = true;
+        _isSneaking = false; // Сбросить подкрадывание, если игрок не отпустил ctrl
+    }
+    
+    private void OnRunReleased()
+    {
+        _isRunning = false;
+    }
+    
+    private void OnSneakPressed()
+    {
+        _isSneaking = true;
+        _isRunning = false; // Сбросить бег, если игрок не отпустил shift
+    }
+    
+    private void OnSneakReleased()
+    {
+        _isSneaking = false;
+    }
+
+    private void OnJump()
+    {
+        if (Time.timeScale != 0 && _isGrounded)
         {
-            _isRunning = true;
-            _isSneaking = false; // Сбросить подкрадывание, если игрок не отпустил ctrl
-        }
-        if (Input.GetKeyUp(KeyCode.LeftShift))
-        {
-            _isRunning = false;
-        }
-        if (Input.GetKeyDown(KeyCode.LeftControl))
-        {
-            _isSneaking = true;
-            _isRunning = false; // Сбросить бег, если игрок не отпустил shift
-        }
-        if (Input.GetKeyUp(KeyCode.LeftControl))
-        {
-            _isSneaking = false;
+            _isJumpPressed = true;
         }
     }
     
@@ -120,9 +179,9 @@ public class PlayerMovement : MonoBehaviour
     private void Move()
     {
         var input = new Vector3(
-            Input.GetAxis("Horizontal"),
+            _moveVector.x,
             0,
-            Input.GetAxis("Vertical")
+            _moveVector.y
         ).normalized;
         
         // Проверить, двигается ли игрок (чтобы просто так не тратить стамину и использовать нужную анимацию)
@@ -220,13 +279,6 @@ public class PlayerMovement : MonoBehaviour
                 _staminaRegenTimer += Time.deltaTime;
         }
 
-        if (isDrinking) // Если выпита газировка, то восстанавливаем максимальную стамину (параметр передается со скрипта PlayerInteraction)
-        {
-            _currentStamina = _playerData.MaxStamina;
-            _staminaRegenTimer = 0.0f;
-            isDrinking = false;
-        }
-
         _controller.Move( transform.rotation * input * (_currentSpeed * Time.deltaTime)); // Двигаем игрока с нужной скоростью
         _animator.SetInteger("Status", status); // Ставим нужную анимацию
     }
@@ -250,8 +302,9 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.Space)) // Если нажат space
+            if (_isJumpPressed) // Если нажат space
             {
+                _isJumpPressed = false;
                 _isJumping = true; // Переходим на прыжок
                 
                 float jumpHeight;
@@ -305,7 +358,7 @@ public class PlayerMovement : MonoBehaviour
     // Просмотр вверх и вниз
     private void Look()
     {
-        var input = -Input.GetAxis("Mouse Y");
+        var input = -_lookVector.y;
         var rotation = _head.localEulerAngles;
         rotation.x += input * Time.deltaTime * mouseSensitivity;
         if (rotation.x > 180) rotation.x -= 360;
@@ -316,7 +369,7 @@ public class PlayerMovement : MonoBehaviour
     // Просмотр влево и вправо, поворот модельки
     private void Turn()
     {
-        var input = Input.GetAxis("Mouse X");
+        var input = _lookVector.x;
         transform.Rotate(0, input * Time.deltaTime * mouseSensitivity, 0);
     }
     
@@ -327,48 +380,40 @@ public class PlayerMovement : MonoBehaviour
         foreach (var radius in _radii) // Пробегаемся по радиусам
         {
             var hits = Physics.OverlapSphere(transform.position, radius); // Создаем сферкаст с нужным радиусом
-            foreach (var hit in hits)
+            foreach (var hit in hits) // Для всех пойманных объектов
             {
                 var hitGameObject = hit.gameObject;
                 if (hitGameObject.CompareTag("Monster")) // Если тэг монстр
                 {
-                    var monsterPosition = hitGameObject.GetComponent<Transform>().position;
+                    var monsterAI = hitGameObject.GetComponentInParent<MonsterAI>(); // Взаимодействуем со скриптом монстра
+                    var monsterPosition = hitGameObject.GetComponent<Transform>().position; // Местоположение головы монстра
                     var direction = monsterPosition - transform.position;
-                    var ray = new Ray(transform.position, direction);
-                    RaycastHit rayHit;
-                    if (Physics.Raycast(ray, out rayHit)) // Рейкастом проверяем, нет ли между игроком и монстром препятствий (стена)
+                    if (!monsterAI.isFlashed) // Если монстр не ослеплен
                     {
-                        if (rayHit.collider.gameObject.CompareTag("Monster")) // Если снова попали в монстра (препятствий нет)
+                        switch (i) // Проверяем, в какой он зоне
                         {
-                            var monsterMovement = hitGameObject.GetComponentInParent<MonsterMovement>(); // Взаимодействуем со скриптом монстра
-                            if (!monsterMovement.isFlashed) // Если монстр не ослеплен
-                            {
-                                switch (i) // Проверяем, в какой он зоне
-                                {
-                                    case 0: // Зона убийства
-                                        transform.forward = new Vector3(direction.x, 0, direction.z); // Поворачиваемся лицом к монстру
-                                        _head.forward = monsterPosition - _head.position;
-                                        _head.localEulerAngles += new Vector3(30f, 0, 0);
+                            case 0: // Зона убийства
+                                transform.forward = new Vector3(direction.x, 0, direction.z); // Поворачиваемся лицом к монстру
+                                _head.forward = monsterPosition - _head.position;
+                                _head.localEulerAngles += new Vector3(30f, 0, 0);
 
-                                        foreach (var audioSource in _allAudio) // Останавливаем все звуки на фоне
-                                        { 
-                                            audioSource.Stop();
-                                        }
-                                        
-                                        _animator.SetInteger("Status", 0); // Меняем аниимацию на idle 
-                                        
-                                        monsterMovement.isKilling = true; // Меняем состояние монстра на убийство
-                                        _isDead = true; // Забираем у игрока управление 
-                                        
-                                        StartCoroutine(KillingRoutine()); // Ждем скример и запускаем меню смерти
-                                        break;
-                                    
-                                    case 1: // Зона обнаружения
-                                        monsterMovement.isChasing = true; // Переводим монстра в режим преследования
-                                        monsterMovement.playerPosition = transform.position; // Задаем ему позицию игрока
-                                        break;
+                                foreach (var audioSource in _allAudio) // Останавливаем все звуки на фоне
+                                { 
+                                    audioSource.Stop();
                                 }
-                            }
+                                        
+                                _animator.SetInteger("Status", 0); // Меняем аниимацию на idle 
+                                        
+                                monsterAI.isKilling = true; // Меняем состояние монстра на убийство
+                                _isDead = true; // Забираем у игрока управление 
+                                        
+                                StartCoroutine(KillingRoutine()); // Ждем скример и запускаем меню смерти
+                                break;
+                                    
+                            case 1: // Зона обнаружения
+                                monsterAI.isChasing = true; // Переводим монстра в режим преследования
+                                monsterAI.targetPosition = transform.position; // Задаем ему позицию игрока
+                                break;
                         }
                     }
                 }

@@ -867,6 +867,7 @@ GameObject:
   - component: {fileID: 5384881907351348972}
   - component: {fileID: 3889240565704817056}
   - component: {fileID: 2942454203657257948}
+  - component: {fileID: 5543458819201672607}
   - component: {fileID: 2446784845862606478}
   - component: {fileID: 8406241983449341255}
   m_Layer: 0
@@ -937,6 +938,18 @@ MonoBehaviour:
   _bottleText: {fileID: 8908286018170875739}
   _powerImage: {fileID: 7842626957595984344}
   _bottleThrowPrefab: {fileID: 8449129245630219289, guid: fc9e56f008d67ab4185599ab04b261c2, type: 3}
+--- !u!114 &5543458819201672607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7630269739653573412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e1f6af5d9c3c7c4eb674d64c967e325, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!143 &2446784845862606478
 CharacterController:
   m_ObjectHideFlags: 0

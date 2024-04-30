@@ -34,8 +34,8 @@ MonoBehaviour:
   _flashCooldown: 5
   _numberOfFlashes: 1
   _numberOfEnergyDrinks: 1
-  _numberOfBottles: 1
-  _mouseSensitivity: 800
+  _numberOfBottles: 3
+  _mouseSensitivity: 200
   _numberOfFlashesToAdd: 1
   _numberOfEnergyDrinksToAdd: 1
   _numberOfBottlesToAdd: 1

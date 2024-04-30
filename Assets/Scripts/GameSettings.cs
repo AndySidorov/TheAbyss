@@ -43,7 +43,7 @@ public class GameSettings : MonoBehaviour
         _ambientText.text = _ambientVolume.ToString("F2");
         
         _mouseSensitivity = PlayerPrefs.HasKey("Mouse Sensitivity") ? PlayerPrefs.GetFloat("Mouse Sensitivity") : _playerData.MouseSensitivity;
-        _mouseSensitivitySlider.value = Mathf.InverseLerp(200, 1000, _mouseSensitivity);
+        _mouseSensitivitySlider.value = Mathf.InverseLerp(10, 500, _mouseSensitivity);
         _mouseSensitivityText.text = _mouseSensitivity.ToString("F2");
     }
     
@@ -75,7 +75,7 @@ public class GameSettings : MonoBehaviour
     
     public void MouseSensitivityChange()
     {
-        var value = Mathf.Lerp(200, 1000, _mouseSensitivitySlider.value);
+        var value = Mathf.Lerp(10, 500, _mouseSensitivitySlider.value);
         PlayerPrefs.SetFloat("Mouse Sensitivity", value);
         _mouseSensitivityText.text = value.ToString("F2");
     }
@@ -98,7 +98,7 @@ public class GameSettings : MonoBehaviour
         PlayerPrefs.SetFloat("Ambient Volume", 0);
         _ambientText.text = 0.ToString("F2");
         
-        _mouseSensitivitySlider.value = Mathf.InverseLerp(200, 1000, _playerData.MouseSensitivity);
+        _mouseSensitivitySlider.value = Mathf.InverseLerp(10, 500, _playerData.MouseSensitivity);
         PlayerPrefs.SetFloat("Mouse Sensitivity", _playerData.MouseSensitivity);
         _mouseSensitivityText.text = _playerData.MouseSensitivity.ToString("F2");
     }

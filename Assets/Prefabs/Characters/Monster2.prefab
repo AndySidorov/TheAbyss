@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 702012776466698341}
   - component: {fileID: 1100312965683335508}
   - component: {fileID: 1488765056573942102}
+  - component: {fileID: 4458113513847174724}
   m_Layer: 2
   m_Name: Monster2
   m_TagString: Untagged
@@ -43,7 +44,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1354289963522451204}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9fbb2e3fb80a5cf4d93d8b53504d9bbc, type: 3}
   m_Name: 
@@ -76,6 +77,31 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &4458113513847174724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1354289963522451204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ed8504ddf6e9e4429a7b4e35da4e53e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monsterData: {fileID: 11400000, guid: cee4cf7ae7c34f54fa164521c014da97, type: 2}
+  monsterSounds: {fileID: 11400000, guid: 3bf4092ac18940e42a2b25c497f2e82c, type: 2}
+  agent: {fileID: 0}
+  audio: {fileID: 0}
+  animator: {fileID: 0}
+  isFlashed: 0
+  isChasing: 0
+  targetPosition: {x: 0, y: 0, z: 0}
+  isKilling: 0
+  isRoarCooldown: 0
+  isFlashCooldown: 0
+  isFirstTime: 1
+  dontMove: 0
 --- !u!1 &6441549441039070831
 GameObject:
   m_ObjectHideFlags: 0
