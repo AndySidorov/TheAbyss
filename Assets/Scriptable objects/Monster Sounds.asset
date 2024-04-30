@@ -16,3 +16,4 @@ MonoBehaviour:
   _roar: {fileID: 8300000, guid: fdf23e648dead9440afedb83129caea4, type: 3}
   _run: {fileID: 8300000, guid: f44048f9152dd34448063b737787b9ff, type: 3}
   _flashed: {fileID: 8300000, guid: ca1efd0ea4c26a140b4abc004223d9bc, type: 3}
+  _walk: {fileID: 8300000, guid: 7bfbfab8c4e66bd4e83e30e6f9b73758, type: 3}
