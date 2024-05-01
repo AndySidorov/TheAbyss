@@ -20,26 +20,23 @@ namespace Save_System
         {
             return Path.Combine(_dataPath, string.Concat(fileName, ".", _fileExtension));
         }
-        
-        public void Save(GameData data)
+
+        public bool SaveExists()
         {
-            var fileLocation = GetPathToFIle(data.name);
+            var fileLocation = GetPathToFIle("Save");
+            return File.Exists(fileLocation);
+        }
+        
+        public void Save(SaveData data)
+        {
+            var fileLocation = GetPathToFIle("Save");
             File.WriteAllText(fileLocation, _serializer.Serialize(data));
         }
 
-        public GameData Load(string name)
+        public SaveData Load()
         {
-            var fileLocation = GetPathToFIle(name);
-            return _serializer.Deserialize<GameData>(File.ReadAllText(fileLocation));
-        }
-
-        public void Delete(string name)
-        {
-            var fileLocation = GetPathToFIle(name);
-            if (File.Exists(fileLocation))
-            {
-                File.Delete(fileLocation);
-            }
+            var fileLocation = GetPathToFIle("Save");
+            return _serializer.Deserialize<SaveData>(File.ReadAllText(fileLocation));
         }
     }
 }
