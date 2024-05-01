@@ -9,24 +9,31 @@ public class WanderAIState : AIState
     private MonsterAI _monsterAI;
     private bool _coroutineIsStart;
     private bool _destinationIsSet;
+    private bool _exited;
     
     public WanderAIState(NavMeshAgent agent,  MonsterAI monsterAI) : base(agent)
     {
         _monsterAI = monsterAI;
-        _isIdle = true;
     }
     
     public override void OnEnter()
     {
         base.OnEnter();
         Debug.Log("Entered Wander State");
+        
+        _exited = false;
+        _isIdle = true;
     }
 
     public override void OnExit()
     {
         base.OnExit();
         Debug.Log("Exited Wander State");
+        
         _agent.speed = _monsterAI.monsterData.Speed;
+        
+        _exited = true;
+        _coroutineIsStart = false;
         _destinationIsSet = false;
     }
 
@@ -93,8 +100,11 @@ public class WanderAIState : AIState
     {
         _coroutineIsStart = true;
         yield return new WaitForSeconds(Random.Range(2f, 6f));
-        _isIdle = Random.Range(0f, 1f) > 0.8f;
-        _coroutineIsStart = false;
+        if (!_exited)
+        {
+            _isIdle = Random.Range(0f, 1f) > 0.8f;
+            _coroutineIsStart = false;
+        }
     }
     
 }

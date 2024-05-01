@@ -1,4 +1,5 @@
 using System;
+using Save_System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -17,10 +18,14 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject _controlsButton;
     
     [SerializeField] private PlayerData _playerData;
+
+    private SaveLoadSystem _saveLoadSystem;
     
     // При загрузке меню сделать курсор видимым и активировать только главный Canvas, остальные отключить (если они есть)
     private void Awake()
     {
+        _saveLoadSystem = SaveLoadSystem.Instance;
+        
         Cursor.visible = true;
         
         if (_menu != null)
@@ -42,25 +47,20 @@ public class MenuManager : MonoBehaviour
     // Запустить сохраненный уровень (если есть) или дефолтный
     public void LoadGame()
     {
-        if (PlayerPrefs.HasKey("Level"))
-        {
-            SceneManager.LoadScene(PlayerPrefs.GetString("Level"), LoadSceneMode.Single);
-        }
-        else
-        {
-            SceneManager.LoadScene("Level 1", LoadSceneMode.Single);
-        }
+        SceneManager.LoadScene(_saveLoadSystem.data.sceneName, LoadSceneMode.Single);
     }
     
     // Сбросить прогресс и восстановить дефолтные значения 
     public void RestartGame()
     {
-        PlayerPrefs.SetFloat("Flash Distance", _playerData.FlashDistance);
-        PlayerPrefs.SetFloat("Flash Cooldown", _playerData.FlashCooldown);
-        PlayerPrefs.SetInt("Number of Flashes", _playerData.NumberOfFlashes);
-        PlayerPrefs.SetInt("Number of Energy Drinks", _playerData.NumberOfEnergyDrinks);
-        PlayerPrefs.SetInt("Number of Bottles", _playerData.NumberOfBottles);
-        PlayerPrefs.SetString("Level", "Level 1");
+        _saveLoadSystem.data.flashDistance = _playerData.FlashDistance;
+        _saveLoadSystem.data.flashCooldown = _playerData.FlashCooldown;
+        _saveLoadSystem.data.numberOfFlashes = _playerData.NumberOfFlashes;
+        _saveLoadSystem.data.numberOfEnergyDrinks = _playerData.NumberOfEnergyDrinks;
+        _saveLoadSystem.data.numberOfBottles = _playerData.NumberOfBottles;
+        _saveLoadSystem.data.sceneName = "Level 1";
+        _saveLoadSystem.SaveGame();
+        
         if (!SceneManager.GetSceneByName("Main Menu").isLoaded) // Если не в главном меню, то перекинуть туда
             SceneManager.LoadScene("Main Menu", LoadSceneMode.Single);
     }
