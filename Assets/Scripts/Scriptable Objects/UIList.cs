@@ -1,6 +1,5 @@
 using UnityEngine;
 
-// Scriptable object со спрайтами для интерфейса
 [CreateAssetMenu (fileName = "UI List", menuName = "Custom/UI", order = 2)]
 public class UIList : ScriptableObject
 {

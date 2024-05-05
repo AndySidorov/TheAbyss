@@ -13,19 +13,16 @@ public class ChaseAIState : AIState
     public override void OnEnter()
     {
         base.OnEnter();
-        Debug.Log("Entered Chase State");
     }
 
     public override void OnExit()
     {
         base.OnExit();
-        Debug.Log("Exited Chase State");
     }
 
     public override void Update()
     {
         base.Update();
-        // мб корутин chase сюда добалю
         
         _monsterAI.animator.SetInteger("Status", 2); // Анимация бега
         
@@ -39,14 +36,11 @@ public class ChaseAIState : AIState
         if (Vector2.Distance(monsterXZ, targetXZ) < _agent.stoppingDistance) 
         {
             _agent.SetDestination(monsterPosition);
-                
-             // Снова зарычит, если увидит
             _monsterAI.isChasing = false; 
-            
         }
-        else // Если монстр только закончил рычать или еще не достиг цель (последнюю переданную)
+        else
         {
-            _agent.SetDestination(_monsterAI.targetPosition); // Задать цель (playerPosition меняется скриптом на игроке, передается вместе с isChasing)
+            _agent.SetDestination(_monsterAI.targetPosition);
         }
     }
     

@@ -13,6 +13,11 @@ MonoBehaviour:
   m_Name: Monster1 Data
   m_EditorClassIdentifier: 
   _speed: 5
+  _walkSpeed: 2.5
   _flashCooldown: 5
   _timeBeforeChase: 2
   _stoppingDistance: 0.95
+  _walkRange: 15
+  _chanceOfWalk: 0.8
+  _minTimeBeforeChoice: 2
+  _maxTimeBeforeChoice: 6

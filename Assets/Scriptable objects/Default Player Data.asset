@@ -23,6 +23,7 @@ MonoBehaviour:
   _sneakHearingZoneRadius: 6.5
   _runHearingZoneRadius: 8
   _landingHearingZoneCoefficient: 1.2
+  _killingZoneRadius: 1.25
   _maxStamina: 10
   _staminaTimeToRegen: 3
   _staminaDecreasePerFrame: 1

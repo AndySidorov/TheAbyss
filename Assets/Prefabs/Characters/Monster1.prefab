@@ -217,7 +217,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8305707596052716634}
-  - component: {fileID: 4328355785232824723}
   - component: {fileID: 2463389338329515585}
   - component: {fileID: 1023961168058649045}
   m_Layer: 2
@@ -245,24 +244,6 @@ Transform:
   - {fileID: 4060124961814854934}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4328355785232824723
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8937720247200583079}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9fbb2e3fb80a5cf4d93d8b53504d9bbc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _monsterData: {fileID: 11400000, guid: 3892490c0bf07084ead9ddcad372ce97, type: 2}
-  _monsterSounds: {fileID: 11400000, guid: 3bf4092ac18940e42a2b25c497f2e82c, type: 2}
-  isFlashed: 0
-  isChasing: 0
-  playerPosition: {x: 0, y: 0, z: 0}
-  isKilling: 0
 --- !u!195 &2463389338329515585
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -298,18 +279,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   monsterData: {fileID: 11400000, guid: 3892490c0bf07084ead9ddcad372ce97, type: 2}
-  monsterSounds: {fileID: 11400000, guid: 3bf4092ac18940e42a2b25c497f2e82c, type: 2}
   agent: {fileID: 0}
-  audio: {fileID: 0}
+  audioSource: {fileID: 0}
   animator: {fileID: 0}
-  isFlashed: 0
-  isChasing: 0
   targetPosition: {x: 0, y: 0, z: 0}
+  isFlashed: 0
+  isRoaring: 0
+  isChasing: 0
   isKilling: 0
-  isRoarCooldown: 0
-  isFlashCooldown: 0
-  isFirstTime: 1
-  dontMove: 0
 --- !u!1001 &5327479272512511529
 PrefabInstance:
   m_ObjectHideFlags: 0
