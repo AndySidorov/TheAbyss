@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Save_System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -80,7 +81,7 @@ public class PlayerMovement : MonoBehaviour
         _audio.Play();
         
         // Задать сохраненное (если есть) или дефолтное значение чувствительности
-        mouseSensitivity = PlayerPrefs.HasKey("Mouse Sensitivity") ? PlayerPrefs.GetFloat("Mouse Sensitivity") : _playerData.MouseSensitivity;
+        mouseSensitivity = SaveLoadSystem.Instance.data.mouseSensitivity;
     }
 
     private void Update()

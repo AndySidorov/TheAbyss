@@ -32,8 +32,8 @@ MonoBehaviour:
   _powerIncreasePerFrame: 400
   _flashDistance: 4
   _flashCooldown: 5
-  _numberOfFlashes: 1
-  _numberOfEnergyDrinks: 1
+  _numberOfFlashes: 3
+  _numberOfEnergyDrinks: 3
   _numberOfBottles: 3
   _mouseSensitivity: 200
   _numberOfFlashesToAdd: 1
