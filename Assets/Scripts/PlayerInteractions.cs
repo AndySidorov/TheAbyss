@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Save_System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -64,11 +65,12 @@ public class PlayerInteractions : MonoBehaviour
         _powerImage.fillAmount = _currentPower; // Занулить картинку силы броска
         
         // Загрузить сохраненные характеристики и предметы (если есть) или дефолтные
-        _flashDistance = PlayerPrefs.HasKey("Flash Distance") ? PlayerPrefs.GetFloat("Flash Distance") : _playerData.FlashDistance;
-        _flashCooldown = PlayerPrefs.HasKey("Flash Cooldown") ? PlayerPrefs.GetFloat("Flash Cooldown") : _playerData.FlashCooldown;
-        _numberOfFlashes = PlayerPrefs.HasKey("Number of Flashes") ? PlayerPrefs.GetInt("Number of Flashes") : _playerData.NumberOfFlashes;
-        _numberOfEnergyDrinks = PlayerPrefs.HasKey("Number of Energy Drinks") ? PlayerPrefs.GetInt("Number of Energy Drinks") : _playerData.NumberOfEnergyDrinks;
-        _numberOfBottles = PlayerPrefs.HasKey("Number of Bottles") ? PlayerPrefs.GetInt("Number of Bottles") : _playerData.NumberOfBottles;
+        var data = SaveLoadSystem.Instance.data;
+        _flashDistance = data.flashDistance;
+        _flashCooldown = data.flashCooldown;
+        _numberOfFlashes = data.numberOfFlashes;
+        _numberOfEnergyDrinks = data.numberOfEnergyDrinks;
+        _numberOfBottles = data.numberOfBottles;
         
         // Подстроить освещение под характеристики (светом обозначается радиус поражения), задать нужную яркость
         _light.range = _flashDistance;
