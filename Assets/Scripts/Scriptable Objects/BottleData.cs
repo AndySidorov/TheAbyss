@@ -1,6 +1,5 @@
 using UnityEngine;
 
-// Scriptable object со звуками и переменными для бутылки
 [CreateAssetMenu(fileName = "Bottle Break Data", menuName = "Custom/Bottle", order = 5)]
 public class BottleData : ScriptableObject
 {

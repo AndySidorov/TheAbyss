@@ -4,12 +4,15 @@ using UnityEngine.AI;
 
 public class WanderAIState : AIState
 {
-    private Vector3 _destination;
-    private bool _isIdle;
     private MonsterAI _monsterAI;
+    
+    private Coroutine _idleOrWanderRoutine;
+    
+    private Vector3 _destination;
+    
+    private bool _isIdle;
     private bool _coroutineIsStart;
     private bool _destinationIsSet;
-    private bool _exited;
     
     public WanderAIState(NavMeshAgent agent,  MonsterAI monsterAI) : base(agent)
     {
@@ -19,30 +22,30 @@ public class WanderAIState : AIState
     public override void OnEnter()
     {
         base.OnEnter();
-        Debug.Log("Entered Wander State");
         
-        _exited = false;
         _isIdle = true;
     }
 
     public override void OnExit()
     {
         base.OnExit();
-        Debug.Log("Exited Wander State");
         
-        _agent.speed = _monsterAI.monsterData.Speed;
+        if (_idleOrWanderRoutine != null)
+        {
+            CoroutineStarter.Instance.StopCoroutine(_idleOrWanderRoutine);
+            _idleOrWanderRoutine = null;
+        }
         
-        _exited = true;
         _coroutineIsStart = false;
         _destinationIsSet = false;
+        
+        _agent.speed = _monsterAI.monsterData.Speed;
+        _agent.SetDestination(_agent.transform.position);
     }
 
     public override void Update()
     {
         base.Update();
-        
-        // запускаем корутину, определяет стоит или идет
-        if(!_coroutineIsStart && !_destinationIsSet) CoroutineStarter.Instance.StartRoutine(IdleOrWanderRoutine());
         
         if (_isIdle)
         {
@@ -52,59 +55,72 @@ public class WanderAIState : AIState
         {
             if (!_destinationIsSet)
             {
-                NavMeshHit hit;
-                Again:
-                var randomInsideSphere = Random.insideUnitSphere;
-                var randomPoint = _agent.transform.position + Random.Range(10f, 30f) 
-                    * new Vector3(randomInsideSphere.x, 0, randomInsideSphere.z);
-                if (NavMesh.SamplePosition(randomPoint, out hit, 4f, NavMesh.AllAreas))
+                if (RandomPoint(_agent.transform.position, _monsterAI.monsterData.WalkRange, out _destination))
                 {
                     _destinationIsSet = true;
-                    _destination = hit.position;
-
-                    _agent.speed = _monsterAI.monsterData.Speed / 2;
+                    _agent.speed = _monsterAI.monsterData.WalkSpeed;
+                    
                     _monsterAI.animator.SetInteger("Status", 5); // Анимация ходьбы
-
                     MonsterSoundPlayer.Instance.WalkSound(_monsterAI.audioSource);
 
                     _agent.SetDestination(_destination);
-                    // Debug.Log(_destination);
                 }
-                else goto Again;
-                    
+                else
+                {
+                    _isIdle = true;
+                }
             }
-            else _agent.SetDestination(_destination);
-            
-            var monsterPosition = _agent.transform.position;
-            var monsterXZ = new Vector2(monsterPosition.x, monsterPosition.z); 
-            var targetXZ = new Vector2(_destination.x, _destination.z);
-            if (Vector2.Distance(monsterXZ, targetXZ) < _agent.stoppingDistance)
+            else
             {
-                _agent.SetDestination(_agent.transform.position);
-                _destinationIsSet = false;
-                _isIdle = true;
+                var monsterPosition = _agent.transform.position;
+                var monsterXZ = new Vector2(monsterPosition.x, monsterPosition.z); 
+                var targetXZ = new Vector2(_destination.x, _destination.z);
+                if (Vector2.Distance(monsterXZ, targetXZ) < _agent.stoppingDistance)
+                {
+                    _agent.SetDestination(_agent.transform.position);
+                    _destinationIsSet = false;
+                    _isIdle = true;
+                }
             }
-            
         } 
+        
+        // запускаем корутину, определяет стоит или идет
+        if (!_coroutineIsStart && !_destinationIsSet)
+        {
+            _idleOrWanderRoutine = CoroutineStarter.Instance.StartCoroutine(IdleOrWanderRoutine());
+        }
     }
 
     private void Idle()
     {
         MonsterSoundPlayer.Instance.IdleSound(_monsterAI.audioSource);
-        
         _monsterAI.animator.SetInteger("Status", 0); // Анимация спокойствия
+    }
+
+    bool RandomPoint(Vector3 center, float range, out Vector3 result)
+    {
+        for (var i = 0; i < 30; i++)
+        {
+            var randomInsideSphere = Random.insideUnitSphere;
+            var randomPoint = center + range * new Vector3(randomInsideSphere.x, 0, randomInsideSphere.z);
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(randomPoint, out hit, 4.0f, NavMesh.AllAreas))
+            {
+                result = hit.position;
+                return true;
+            }
+        }
+        result = Vector3.zero;
+        return false;
     }
     
 
     IEnumerator IdleOrWanderRoutine()
     {
         _coroutineIsStart = true;
-        yield return new WaitForSeconds(Random.Range(2f, 6f));
-        if (!_exited)
-        {
-            _isIdle = Random.Range(0f, 1f) > 0.8f;
-            _coroutineIsStart = false;
-        }
+        yield return new WaitForSeconds(Random.Range(_monsterAI.monsterData.MinTimeBeforeChoice, _monsterAI.monsterData.MaxTimeBeforeChoice));
+        _isIdle = Random.Range(0f, 1f) > _monsterAI.monsterData.ChanceOfWalk;
+        _coroutineIsStart = false;
+        _idleOrWanderRoutine = null;
     }
-    
 }

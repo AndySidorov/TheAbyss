@@ -1,6 +1,5 @@
 using UnityEngine;
 
-// Scriptable object со всеми переменными для игрока
 [CreateAssetMenu(fileName = "Default Player Data", menuName = "Custom/Player", order = 0)]
 public class PlayerData : ScriptableObject
 {
@@ -17,6 +16,8 @@ public class PlayerData : ScriptableObject
     [SerializeField] private float _sneakHearingZoneRadius;
     [SerializeField] private float _runHearingZoneRadius;
     [SerializeField] private float _landingHearingZoneCoefficient; // Как сильно увеличивается зона слышимости при приземлении
+    
+    [SerializeField] private float _killingZoneRadius;
     
     [SerializeField] private float _maxStamina;
     [SerializeField] private float _staminaTimeToRegen;
@@ -44,7 +45,7 @@ public class PlayerData : ScriptableObject
     [SerializeField] private float _defaultLightIntensity; // Яркость обычного фонарика
     [SerializeField] private float _flashLightIntensity; // Яркость вспышки
     
-    [SerializeField] private float _waitForDeath; // Сколкьо времени ждать после убийства
+    [SerializeField] private float _waitForDeath; // Сколько времени ждать после убийства
     
     public float WalkSpeed => _walkSpeed;
     public float SneakSpeed => _sneakSpeed;
@@ -59,6 +60,9 @@ public class PlayerData : ScriptableObject
     public float SneakHearingZoneRadius => _sneakHearingZoneRadius;
     public float RunHearingZoneRadius => _runHearingZoneRadius;
     public float LandingHearingZoneCoefficient => _landingHearingZoneCoefficient;
+
+    public float KillingZoneRadius => _killingZoneRadius;
+    
     
     public float MaxStamina => _maxStamina;
     public float StaminaTimeToRegen => _staminaTimeToRegen;

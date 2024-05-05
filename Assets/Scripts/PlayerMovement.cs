@@ -8,7 +8,6 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
-    // Также связан с PlayerInteractions (может поменять значение после паузы)
     public float mouseSensitivity;
     
     [SerializeField] private PlayerData _playerData;
@@ -41,7 +40,6 @@ public class PlayerMovement : MonoBehaviour
     private float _lastZoneRadius; 
     
     private readonly float _gravityValue = -9.81f;
-    private readonly float _killingZoneRadius = 1.2f;
     
     private bool _isGrounded;
     private bool _isJumping;
@@ -66,21 +64,18 @@ public class PlayerMovement : MonoBehaviour
         _audio = GetComponentInChildren<AudioSource>();
         _allAudio = FindObjectsOfType<AudioSource>(); // Нужно, чтобы выключить все звуки при нажатии паузы или при смерти
         
-        // Изначально задать максимальную стамину
         _currentStamina = _playerData.MaxStamina;
         
-        _radii = new List<float>(){_killingZoneRadius, _playerData.WalkHearingZoneRadius}; // Радиусы для сфер пересечений
+        _radii = new List<float>(){_playerData.KillingZoneRadius, _playerData.WalkHearingZoneRadius};
         
         // Записываем последние значения на случай, если игрок появится в воздухе
         _lastSpeed = _playerData.WalkSpeed;
         _lastZoneRadius = _playerData.WalkHearingZoneRadius;
         
-        // Запустить обычный звук
         _audio.clip = _playerSounds.Idle;
         _audio.loop = true;
         _audio.Play();
         
-        // Задать сохраненное (если есть) или дефолтное значение чувствительности
         mouseSensitivity = SaveLoadSystem.Instance.data.mouseSensitivity;
     }
 
@@ -176,7 +171,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
     
-    // Все, связанное с передвижением
     private void Move()
     {
         var input = new Vector3(
@@ -185,65 +179,62 @@ public class PlayerMovement : MonoBehaviour
             _moveVector.y
         ).normalized;
         
-        // Проверить, двигается ли игрок (чтобы просто так не тратить стамину и использовать нужную анимацию)
-        _isMoving = input != Vector3.zero;
+        _isMoving = input != Vector3.zero; // Проверить, двигается ли игрок
         
-        // Анимации: 0 - idle, 1 - isWalking, 2 - isRunning, 3 - isSneaking, 4 - isJumping
-        int status;
+        int status; // Анимации: 0 - idle, 1 - isWalking, 2 - isRunning, 3 - isSneaking, 4 - isJumping
 
-        if (!_isGrounded || _isJumping) // Если игрок не на земле или в режиме прыжка
+        if (!_isGrounded || _isJumping)
         {
             status = 4; // Задать анимацию isJumping
             
-            _currentSpeed = _lastSpeed; // Поменять текущую скорость на последнюю имевшуюся до прыжка (чтоб игрок не менял скорость во время прыжка)
-            _currentZoneRadius = _lastZoneRadius; // Поменять текущую зону обнаружения на последнюю имевшуюся
+            _currentSpeed = _lastSpeed;
+            _currentZoneRadius = _lastZoneRadius;
             
-            _isJumping = true; // Меняем значение на true, если падаем (чтобы был звук приземления)
+            _isJumping = true;
         }
-        else // Если игрок не прыгает
+        else
         {
-            if (_isMoving) // Если игрок двигается
+            if (_isMoving)
             {
-                if (_isRunning && _currentStamina > 0) // Если игрок в режиме бега и у него еще есть стамина
+                if (_isRunning && _currentStamina > 0)
                 {
                     status = 2; // Анимация бега
                     
-                    _currentSpeed = _playerData.RunSpeed; // Поменять текущую скорость на скорость бега
-                    _currentZoneRadius = _playerData.RunHearingZoneRadius; // Поменять текущую зону обнаружения
-
-                    // Уменьшить текущее количество стамины (не выходя за рамки)
+                    _currentSpeed = _playerData.RunSpeed;
+                    _currentZoneRadius = _playerData.RunHearingZoneRadius;
+                    
                     _currentStamina = Mathf.Clamp(_currentStamina - (_playerData.StaminaDecreasePerFrame * Time.deltaTime), 0.0f, _playerData.MaxStamina);
-                    _staminaRegenTimer = 0.0f; // Сбросить таймер восстановления стамины (нужно снова ждать начала восстановления)
+                    _staminaRegenTimer = 0.0f;
 
-                    if (_audio.clip != _playerSounds.Run) // Если еще не играет звук бега (чтобы не запускать его с начала каждый раз)
+                    if (_audio.clip != _playerSounds.Run)
                     {
                         _audio.clip = _playerSounds.Run;
                         _audio.loop = true;
                         _audio.Play();
                     }
                 }
-                else if (_isSneaking) // Если игрок в режиме подкрадывания
+                else if (_isSneaking)
                 {
                     status = 3; // Анимация подкрадывания
                     
                     _currentSpeed = _playerData.SneakSpeed;
                     _currentZoneRadius = _playerData.SneakHearingZoneRadius;
 
-                    if (_audio.clip != _playerSounds.Sneak) // Если еще не играет звук подкрадывания (чтобы не запускать его с начала каждый раз)
+                    if (_audio.clip != _playerSounds.Sneak)
                     {
                         _audio.clip = _playerSounds.Sneak;
                         _audio.loop = true;
                         _audio.Play();
                     }
                 }
-                else // Иначе игрок идет
+                else
                 {
                     status = 1; // Анимация шага
                     
                     _currentSpeed = _playerData.WalkSpeed;
                     _currentZoneRadius = _playerData.WalkHearingZoneRadius;
 
-                    if (_audio.clip != _playerSounds.Walk) // Проверяем включен ли звук шага
+                    if (_audio.clip != _playerSounds.Walk)
                     {
                         _audio.clip = _playerSounds.Walk;
                         _audio.loop = true;
@@ -251,14 +242,14 @@ public class PlayerMovement : MonoBehaviour
                     }
                 }
             }
-            else // Иначе игрок стоит
+            else
             {
                 status = 0; // Анимация idle
                 
                 _currentSpeed = _playerData.WalkSpeed;
                 _currentZoneRadius = _playerData.IdleHearingZoneRadius;
                     
-                if (_audio.clip != _playerSounds.Idle) // Проверяем включен ли звук
+                if (_audio.clip != _playerSounds.Idle)
                 {
                     _audio.clip = _playerSounds.Idle;
                     _audio.loop = true;
@@ -266,77 +257,72 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
             
-            // Сохраняем последние значения до падения, чтобы они использовались во время полета
             _lastSpeed = _currentSpeed;
             _lastZoneRadius = _currentZoneRadius;
         }
         
-        // Если текущая стамина меньше максимально возможной, а игрок не бежит или не двигается (даже с нажатой кнопкой shift), прыгает (не прерывать стамину, если игрок нажал shift в полете)
         if (_currentStamina < _playerData.MaxStamina && (!_isRunning || !_isMoving || _isJumping))
         {
-            if (_staminaRegenTimer >= _playerData.StaminaTimeToRegen) // Если прошло нужное количество времени для регена, то прибавляем стамину
+            if (_staminaRegenTimer >= _playerData.StaminaTimeToRegen)
                 _currentStamina = Mathf.Clamp(_currentStamina + (_playerData.StaminaIncreasePerFrame * Time.deltaTime), 0.0f, _playerData.MaxStamina);
-            else // Если не прошло, то прибавляем прошедшее время
+            else
                 _staminaRegenTimer += Time.deltaTime;
         }
 
-        _controller.Move( transform.rotation * input * (_currentSpeed * Time.deltaTime)); // Двигаем игрока с нужной скоростью
-        _animator.SetInteger("Status", status); // Ставим нужную анимацию
+        _controller.Move( transform.rotation * input * (_currentSpeed * Time.deltaTime));
+        _animator.SetInteger("Status", status);
     }
 
     private void Jump()
     {
-        if (_isGrounded) // Если сработал рейкаст
+        if (_isGrounded)
         {
-            if (!_isJumpingExtraTime) // Если мы не переходим на прыжок
+            if (!_isJumpingExtraTime)
             {
-                _verticalVelocity = -2f; // Прилипаем к земле, чтобы игрок не подскакивал на каждой кочке
+                _verticalVelocity = -2f;
 
-                if (_isJumping) // Если мы уже были в прыжке (приземляемся)
+                if (_isJumping)
                 {
                     _isJumping = false;
                     
-                    // Увеличиваем зону обнаружения на нужный коэффициент (звук громче при приземлении)
                     _currentZoneRadius = _lastZoneRadius * _playerData.LandingHearingZoneCoefficient;
                     
-                    _audio.PlayOneShot(_playerSounds.Jumped); // Сыграть звук приземления
+                    _audio.PlayOneShot(_playerSounds.Jumped);
                 }
             }
 
-            if (_isJumpPressed) // Если нажат space
+            if (_isJumpPressed)
             {
                 _isJumpPressed = false;
-                _isJumping = true; // Переходим на прыжок
+                _isJumping = true;
                 
                 float jumpHeight;
 
-                if (_isRunning && _currentStamina - _playerData.RunJumpStaminaDecrease >= 0) // Если игрок в режиме бега и у него еще есть нужная стамина
+                if (_isRunning && _currentStamina - _playerData.RunJumpStaminaDecrease >= 0)
                 {
                     _currentSpeed = _playerData.RunSpeed;
                     _currentZoneRadius = _playerData.RunHearingZoneRadius;
                     jumpHeight = _playerData.RunJumpHeight;
                     
-                    _currentStamina -= _playerData.RunJumpStaminaDecrease; // Отнять стамину
-                    _staminaRegenTimer = 0.0f; // Сбросить таймер восстановления стамины (нужно снова ждать начала восстановления)
+                    _currentStamina -= _playerData.RunJumpStaminaDecrease;
+                    _staminaRegenTimer = 0.0f;
                 }
-                else if (_isSneaking) // Если игрок в режиме подкрадывания
+                else if (_isSneaking)
                 {
                     _currentSpeed = _playerData.SneakSpeed;
                     _currentZoneRadius = _playerData.SneakHearingZoneRadius;
                     jumpHeight = _playerData.SneakJumpHeight;
                 }
-                else // Если игрок стоит или идет
+                else
                 {
                     _currentSpeed = _playerData.WalkSpeed;
                     _currentZoneRadius = _playerData.WalkHearingZoneRadius;
                     jumpHeight = _playerData.WalkJumpHeight;
                 }
                 
-                // Сохраняем последние значения до падения, чтобы они использовались во время полета
                 _lastSpeed = _currentSpeed;
                 _lastZoneRadius = _currentZoneRadius;
                 
-                // Задаем правильную вертикальную скорость по формуле (исходя из текущей высоты прыжка)
                 _verticalVelocity = Mathf.Sqrt(jumpHeight * -3.0f * _gravityValue);
 
                 StartCoroutine(JumpingRoutine()); // Даем дополнительное время, чтобы оторваться от земли
@@ -347,56 +333,61 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        _verticalVelocity += _gravityValue * Time.deltaTime; // Обновляем вертикальную скорость
+        _verticalVelocity += _gravityValue * Time.deltaTime;
         
-        // После всего кода в Move и Jump
-        _staminaImage.fillAmount = _currentStamina / _playerData.MaxStamina; // Отображаем правильное количество стамины в интерфейсе
-        _radii[1] = _currentZoneRadius; // Сохраняем нужный радиус обнаружения в массив для удобства
+        _staminaImage.fillAmount = _currentStamina / _playerData.MaxStamina;
+        _radii[1] = _currentZoneRadius;
         
-        _controller.Move(new Vector3(0, _verticalVelocity, 0) * Time.deltaTime); // Двигаем игрока вертикально
+        _controller.Move(new Vector3(0, _verticalVelocity, 0) * Time.deltaTime);
     }
     
-    // Просмотр вверх и вниз
     private void Look()
     {
         var input = -_lookVector.y;
         var rotation = _head.localEulerAngles;
         rotation.x += input * Time.deltaTime * mouseSensitivity;
         if (rotation.x > 180) rotation.x -= 360;
-        rotation.x = Mathf.Clamp(rotation.x, -58, 58); // Не уходить за эти рамки, чтобы не мешала моделька игрока
+        rotation.x = Mathf.Clamp(rotation.x, -58, 58);
         _head.localEulerAngles = rotation;
     }
     
-    // Просмотр влево и вправо, поворот модельки
     private void Turn()
     {
         var input = _lookVector.x;
         transform.Rotate(0, input * Time.deltaTime * mouseSensitivity, 0);
     }
     
-    // Проверка всех зон обнаружения
     private void Zone()
     {
-        var i = 0; // Параметр для определения, какая это зона
-        foreach (var radius in _radii) // Пробегаемся по радиусам
+        var i = 0;
+        foreach (var radius in _radii)
         {
-            var hits = Physics.OverlapSphere(transform.position, radius); // Создаем сферкаст с нужным радиусом
-            foreach (var hit in hits) // Для всех пойманных объектов
+            if (_isDead) break;
+            
+            var hits = Physics.OverlapSphere(transform.position, radius);
+            
+            foreach (var hit in hits)
             {
+                if (_isDead) break;
+                
                 var hitGameObject = hit.gameObject;
-                if (hitGameObject.CompareTag("Monster")) // Если тэг монстр
+                
+                if (hitGameObject.CompareTag("Monster"))
                 {
-                    var monsterAI = hitGameObject.GetComponentInParent<MonsterAI>(); // Взаимодействуем со скриптом монстра
-                    var monsterPosition = hitGameObject.GetComponent<Transform>().position; // Местоположение головы монстра
+                    var monsterAI = hitGameObject.GetComponentInParent<MonsterAI>();
+                    var monsterPosition = monsterAI.Position;
                     var direction = monsterPosition - transform.position;
-                    if (!monsterAI.isFlashed) // Если монстр не ослеплен
+                    
+                    if (!monsterAI.isFlashed)
                     {
-                        switch (i) // Проверяем, в какой он зоне
+                        switch (i)
                         {
                             case 0: // Зона убийства
+                                monsterAI.targetPosition = transform.position;
+                                
                                 transform.forward = new Vector3(direction.x, 0, direction.z); // Поворачиваемся лицом к монстру
                                 _head.forward = monsterPosition - _head.position;
-                                _head.localEulerAngles += new Vector3(30f, 0, 0);
+                                _head.localEulerAngles += new Vector3(-40f, 0, 0);
 
                                 foreach (var audioSource in _allAudio) // Останавливаем все звуки на фоне
                                 { 
@@ -404,26 +395,25 @@ public class PlayerMovement : MonoBehaviour
                                 }
                                         
                                 _animator.SetInteger("Status", 0); // Меняем аниимацию на idle 
+                                
+                                monsterAI.isKilling = true;
+                                _isDead = true;
                                         
-                                monsterAI.isKilling = true; // Меняем состояние монстра на убийство
-                                _isDead = true; // Забираем у игрока управление 
-                                        
-                                StartCoroutine(KillingRoutine()); // Ждем скример и запускаем меню смерти
+                                StartCoroutine(KillingRoutine());
                                 break;
                                     
                             case 1: // Зона обнаружения
-                                monsterAI.isChasing = true; // Переводим монстра в режим преследования
-                                monsterAI.targetPosition = transform.position; // Задаем ему позицию игрока
+                                monsterAI.isChasing = true;
+                                monsterAI.targetPosition = transform.position;
                                 break;
                         }
                     }
                 }
             }
-            i++; // Следующая зона
+            i++;
         }
     }
     
-    // Сферкаст, проверка на нахождение на земле
     private bool CheckGrounded()
     {
         var ray = new Ray(transform.position, Vector3.down);
@@ -438,7 +428,6 @@ public class PlayerMovement : MonoBehaviour
         _isJumpingExtraTime = false;
     }
     
-    // Время скримера и загрузка меню смерти
     private IEnumerator KillingRoutine()
     {
         yield return new WaitForSeconds(_playerData.WaitForDeath);
