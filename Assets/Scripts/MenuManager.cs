@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
-// Скрипт на MenuManager Empty GameObject отвечающий за загрузку уровней и меню
 public class MenuManager : MonoBehaviour
 {
     [SerializeField] private EventSystem _eventSystem;
@@ -21,7 +20,6 @@ public class MenuManager : MonoBehaviour
 
     private SaveLoadSystem _saveLoadSystem;
     
-    // При загрузке меню сделать курсор видимым и активировать только главный Canvas, остальные отключить (если они есть)
     private void Awake()
     {
         _saveLoadSystem = SaveLoadSystem.Instance;
@@ -38,19 +36,16 @@ public class MenuManager : MonoBehaviour
         _eventSystem.SetSelectedGameObject(_menuButton);
     }
     
-    // Отключить курсор при выходе из меню
     private void OnDestroy()
     {
         Cursor.visible = false;
     }
     
-    // Запустить сохраненный уровень (если есть) или дефолтный
     public void LoadGame()
     {
         SceneManager.LoadScene(_saveLoadSystem.data.sceneName, LoadSceneMode.Single);
     }
     
-    // Сбросить прогресс и восстановить дефолтные значения 
     public void RestartGame()
     {
         _saveLoadSystem.data.flashDistance = _playerData.FlashDistance;
@@ -61,31 +56,27 @@ public class MenuManager : MonoBehaviour
         _saveLoadSystem.data.sceneName = "Level 1";
         _saveLoadSystem.SaveGame();
         
-        if (!SceneManager.GetSceneByName("Main Menu").isLoaded) // Если не в главном меню, то перекинуть туда
+        if (!SceneManager.GetSceneByName("Main Menu").isLoaded)
             SceneManager.LoadScene("Main Menu", LoadSceneMode.Single);
     }
     
-    // Выйти из игры
     public void QuitGame()
     {
         Application.Quit();
     }
     
-    // Загрузить главное меню
     public void LoadMainMenu()
     {
-        Time.timeScale = 1; // Если переход был из меню паузы, то надо вернуть нормальное время
+        Time.timeScale = 1;
         SceneManager.LoadScene("Main Menu", LoadSceneMode.Single);
     }
     
-    // Выйти из паузы
     public void UnloadPauseMenu()
     {
-        Time.timeScale = 1; // Вернуть нормальное время
+        Time.timeScale = 1;
         SceneManager.UnloadSceneAsync("Pause Menu");
     }
-
-    // Загрузить Canvas с настройками
+    
     public void LoadSettings()
     {
         _settings.gameObject.SetActive(true);
@@ -94,7 +85,6 @@ public class MenuManager : MonoBehaviour
         _eventSystem.SetSelectedGameObject(_settingsButton);
     }
     
-    // Отгрузить Canvas с настройками
     public void UnloadSettings()
     {
         _menu.gameObject.SetActive(true);
@@ -103,7 +93,6 @@ public class MenuManager : MonoBehaviour
         _eventSystem.SetSelectedGameObject(_menuButton);
     }
     
-    // Загрузить Canvas с управлением
     public void LoadControls()
     {
         _controls.gameObject.SetActive(true);
@@ -112,7 +101,6 @@ public class MenuManager : MonoBehaviour
         _eventSystem.SetSelectedGameObject(_controlsButton);
     }
     
-    // Отгрузить Canvas с управлением
     public void UnloadControls()
     {
         _menu.gameObject.SetActive(true);

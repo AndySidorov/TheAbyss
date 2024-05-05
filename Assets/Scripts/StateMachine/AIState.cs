@@ -4,7 +4,7 @@ public abstract class AIState : IState
 {
     protected NavMeshAgent _agent;
 
-    public AIState(NavMeshAgent agent)
+    protected AIState(NavMeshAgent agent)
     {
         _agent = agent;
     }

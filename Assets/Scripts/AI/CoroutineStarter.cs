@@ -12,10 +12,4 @@ public class CoroutineStarter : MonoBehaviour
         
         DontDestroyOnLoad(gameObject);
     }
-    
-    public void StartRoutine(IEnumerator enumerator)
-    {
-        Instance.StartCoroutine(enumerator);
-    } 
-    
 }

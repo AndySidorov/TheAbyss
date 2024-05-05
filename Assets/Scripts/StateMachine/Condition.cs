@@ -16,5 +16,4 @@ public class Condition
    {
       return _condition.Invoke();
    }
-   // public bool Evaluate() => _condition.Invoke();
 }

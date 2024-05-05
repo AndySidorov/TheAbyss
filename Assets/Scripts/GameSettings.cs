@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 
-// Скрипт на MenuManager Empty GameObject отвечающий за настройки
 public class GameSettings : MonoBehaviour
 {
     [SerializeField] private AudioMixer _mixer;
@@ -27,7 +26,6 @@ public class GameSettings : MonoBehaviour
     
     private SaveLoadSystem _saveLoadSystem;
     
-    // Задать сохраненные (если есть) или дефолтные громкости звука и чувствительность мыши, подвинуть ползунки на нужные места, отобразить числа
     private void Start()
     {
         _saveLoadSystem = SaveLoadSystem.Instance;
@@ -52,8 +50,6 @@ public class GameSettings : MonoBehaviour
         _mouseSensitivitySlider.value = Mathf.InverseLerp(10, 500, _mouseSensitivity);
         _mouseSensitivityText.text = _mouseSensitivity.ToString("F2");
     }
-    
-    // Срабатывают при изменении положения ползунка: меняют громкость звука или чувствительность, отображаемые числа, сохраняют настройки
     
     public void PlayerVolumeChange()
     {
@@ -90,7 +86,6 @@ public class GameSettings : MonoBehaviour
         _saveLoadSystem.SaveGame();
     }
     
-    // Сброс к дефолтным настройкам при нажатии кнопки: дефолтные громкость звука и чувствительность, отображаемые числа, сохраняются дефолтные настройки
     public void DefaultSettings()
     {
         _playerSlider.value = Mathf.InverseLerp(-80f, 20f, 0);
