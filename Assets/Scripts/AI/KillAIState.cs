@@ -12,27 +12,24 @@ public class KillAIState : AIState
     public override void OnEnter()
     {
         base.OnEnter();
-        Debug.Log("Entered Kill State");
     }
 
     public override void OnExit()
     {
         base.OnExit();
-        Debug.Log("Exited Kill State");
     }
 
     public override void Update()
     {
         base.Update();
+        
         _agent.SetDestination(_agent.transform.position);
-        _monsterAI.isKilling = false;
-        _monsterAI.dontMove = true;
 
         var transform = _monsterAI.transform;
         var direction = _monsterAI.targetPosition - transform.position;
         transform.forward = new Vector3(direction.x, 0, direction.z); // Повернуть монстра к нам
         
         MonsterSoundPlayer.Instance.RoarSound(_monsterAI.audioSource);
-        _monsterAI.animator.SetInteger("Status", 3);
+        _monsterAI.animator.SetInteger("Status", 3); // Анимация убийства
     }
 }

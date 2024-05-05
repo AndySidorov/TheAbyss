@@ -1,6 +1,5 @@
 using UnityEngine;
 
-// Scriptable object со звуками для игрока
 [CreateAssetMenu (fileName = "PlayerSounds", menuName = "Custom/PlayerSounds", order = 1)]
 public class PlayerSounds : ScriptableObject
 {
