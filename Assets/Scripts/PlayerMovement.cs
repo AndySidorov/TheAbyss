@@ -187,6 +187,12 @@ public class PlayerMovement : MonoBehaviour
         {
             status = 4; // Задать анимацию isJumping
             
+            if (_audio.isPlaying && (_audio.clip == _playerSounds.Run || _audio.clip == _playerSounds.Sneak 
+                                                                      || _audio.clip == _playerSounds.Walk || _audio.clip == _playerSounds.Idle))
+            {
+                _audio.clip = null;
+            }
+            
             _currentSpeed = _lastSpeed;
             _currentZoneRadius = _lastZoneRadius;
             

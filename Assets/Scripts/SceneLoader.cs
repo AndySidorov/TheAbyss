@@ -1,3 +1,4 @@
+using System;
 using Save_System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,17 +12,33 @@ public class SceneLoader : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             var player = other.gameObject.GetComponent<PlayerInteractions>();
-
-            var saveLoadSystem = SaveLoadSystem.Instance;
-            saveLoadSystem.data.flashDistance = player.FlashDistance;
-            saveLoadSystem.data.flashCooldown = player.FlashCooldown;
-            saveLoadSystem.data.numberOfFlashes = player.NumberOfFlashes;
-            saveLoadSystem.data.numberOfEnergyDrinks = player.NumberOfEnergyDrinks;
-            saveLoadSystem.data.numberOfBottles = player.NumberOfBottles;
-            saveLoadSystem.data.sceneName = _sceneName;
-            saveLoadSystem.SaveGame();
             
-            SceneManager.LoadScene(_sceneName, LoadSceneMode.Single);
+            if (player.HasKey)
+            {
+                var saveLoadSystem = SaveLoadSystem.Instance;
+                saveLoadSystem.data.flashDistance = player.FlashDistance;
+                saveLoadSystem.data.flashCooldown = player.FlashCooldown;
+                saveLoadSystem.data.numberOfFlashes = player.NumberOfFlashes;
+                saveLoadSystem.data.numberOfEnergyDrinks = player.NumberOfEnergyDrinks;
+                saveLoadSystem.data.numberOfBottles = player.NumberOfBottles;
+                saveLoadSystem.data.sceneName = _sceneName;
+                saveLoadSystem.SaveGame();
+            
+                SceneManager.LoadScene(_sceneName, LoadSceneMode.Single);
+            }
+            else
+            {
+                player.keyImage.enabled = true;
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            var player = other.gameObject.GetComponent<PlayerInteractions>();
+            player.keyImage.enabled = false;
         }
     }
 }
