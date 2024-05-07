@@ -30,10 +30,11 @@ public class PlayerInteractions : MonoBehaviour
     [SerializeField] private Transform _head;
     [SerializeField] private Image _aimImage;
     [SerializeField] private Image _eImage;
+    [SerializeField] private Image _powerImage;
+    [SerializeField] public Image keyImage;
     [SerializeField] private TextMeshProUGUI _flashText;
     [SerializeField] private TextMeshProUGUI _energyDrinkText;
     [SerializeField] private TextMeshProUGUI _bottleText;
-    [SerializeField] private Image _powerImage;
     
     [SerializeField] private BottleThrow _bottleThrowPrefab;
     
@@ -47,6 +48,9 @@ public class PlayerInteractions : MonoBehaviour
     private bool _isPaused;
     
     private float _currentPower;
+
+    private bool _hasKey;
+    public bool HasKey => _hasKey;
     
     private void Awake()
     {
@@ -57,6 +61,7 @@ public class PlayerInteractions : MonoBehaviour
         
         _aimImage.sprite = _UIList.AimSprite;
         _eImage.enabled = false;
+        keyImage.enabled = false;
         _flashText.text = _numberOfFlashes.ToString();
         _energyDrinkText.text = _numberOfEnergyDrinks.ToString();
         _currentPower = 0;
@@ -209,6 +214,9 @@ public class PlayerInteractions : MonoBehaviour
                 case "Wires":
                     if (_flashCooldown - _playerData.FlashCooldownToDecrease >= 0)
                         _flashCooldown -= _playerData.FlashCooldownToDecrease;
+                    break;
+                case "Key":
+                    _hasKey = true;
                     break;
             }
             item.OnInteraction();
