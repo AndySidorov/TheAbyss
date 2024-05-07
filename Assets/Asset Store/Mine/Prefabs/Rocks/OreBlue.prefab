@@ -92,6 +92,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4105734142940820}
+  - component: {fileID: -2838213713559869887}
   m_Layer: 0
   m_Name: OreBlue
   m_TagString: Untagged
@@ -117,6 +118,22 @@ Transform:
   - {fileID: 4803495310151556}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!208 &-2838213713559869887
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1779761706634458}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: 1.6, y: 1.5, z: 1.6}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.15, y: -0.2, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &1880737949742296
 GameObject:
   m_ObjectHideFlags: 0

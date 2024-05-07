@@ -198,6 +198,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4414344445486422}
+  - component: {fileID: 3252308061824668839}
   m_Layer: 0
   m_Name: OreGreen
   m_TagString: Untagged
@@ -218,11 +219,27 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 9064751219948885175}
   - {fileID: 4632921295878818}
   - {fileID: 4135693918601588}
-  - {fileID: 9064751219948885175}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!208 &3252308061824668839
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990963258372974}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: 1.6, y: 1.5, z: 1.6}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.15, y: -0.2, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &3775697369546684214
 GameObject:
   m_ObjectHideFlags: 0
